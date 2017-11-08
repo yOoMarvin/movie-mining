@@ -10,4 +10,4 @@ def confusion_matrix_report(y_true, y_pred):
         report += "{:>{}}".format(label1, column_width) + " ".join(["{:{}d}".format(cm[i, j], column_width) for j in range(len(labels))]) + "\n"
     return report
 
-print(confusion_matrix_report(golf['Play'], golf_prediction))
+#print(confusion_matrix_report(golf['Play'], golf_prediction))
