@@ -1,14 +1,11 @@
 # loops over all collection data, converts to true if collection - false if not part of collection
 
-import pandas as pd
 
-interesting_data = pd.read_csv("../../data/interim/only_useful_datasets.csv")
-
-
-interesting_data.belongs_to_collection = interesting_data.belongs_to_collection.astype(str)
-
-
-interesting_data['belongs_to_collection'] = (interesting_data['belongs_to_collection'] != 'nan').astype(int)
-
-interesting_data.belongs_to_collection = interesting_data.belongs_to_collection.astype(bool)
-print(interesting_data.belongs_to_collection)
+def collection_to_boolean(data_frame):
+    # Data should be available as str (see Kaggle Webpage)
+    data_frame.belongs_to_collection = data_frame.belongs_to_collection.astype(str)
+    # Looping over Data to convert to 0/1
+    data_frame['belongs_to_collection'] = (data_frame['belongs_to_collection'] != 'nan').astype(int)
+    # Converting data from 0/1 to true false
+    data_frame.belongs_to_collection = data_frame.belongs_to_collection.astype(bool)
+    return data_frame

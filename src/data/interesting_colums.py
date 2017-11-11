@@ -14,3 +14,4 @@ print(metadata.keys())
 # query dataset based on valid revenue and valid budget, save to csv file
 metadata = metadata.query('revenue > 0 & budget > 0')
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
+
