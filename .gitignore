@@ -7,8 +7,6 @@
 credits.csv
 
 
-
-
 ###############################################
 
 # Byte-compiled / optimized / DLL files
@@ -71,3 +69,4 @@ target/
 
 # Repo scratch directory
 scratch/
+.idea/*
