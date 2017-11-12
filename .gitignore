@@ -71,3 +71,6 @@ target/
 
 # Repo scratch directory
 scratch/
+
+# Jetbrains idea folder
+.idea/
