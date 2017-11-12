@@ -1,8 +1,5 @@
 import pandas as pd
 
-#import dataset
-dataframe = pd.read_csv("only_useful_datasets.csv")
-
 """function to add columns quarter and year"""
 def years_quarters (movies):
     #change format of column "release_date" to DateTime
@@ -16,10 +13,3 @@ def years_quarters (movies):
     #movies_with_year_quarter = movies_with_year_quarter.drop("release_date", 1)
     
     return movies_with_year_quarter
-
-
-df = years_quarters(dataframe)
-
-#Export
-#df.to_csv("out.csv")
-
