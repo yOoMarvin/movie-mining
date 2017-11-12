@@ -1,10 +1,15 @@
 import pandas as pd
 import re
 
-def encodeProductionCompany():
-    movies = pd.read_csv("../../data/interim/only_useful_datasets.csv")
+def encodeProductionCompany(df):
+    """
+    MultipleHotEncode column production_companies
+    Json loads does not work here
+    Regex to extract needed values
+    Seperate them with | for MultipleHotEncoding
+    """
     new_values = []
-    for index, row in movies.iterrows():
+    for index, row in df.iterrows():
         new_value = row["production_companies"].replace("[", "").replace("]", "").replace("{\'name\': ", "").replace("}", "").replace("\'", "")
         new_value = re.sub(", id: \d+", "", new_value)
         new_value = new_value.replace(", ", "|")
@@ -12,10 +17,14 @@ def encodeProductionCompany():
     new_values_encoded = pd.Series(new_values).str.get_dummies()
     return new_values_encoded
 
-def encodeProductionCompanyToOne():
-    movies = pd.read_csv("../../data/interim/only_useful_datasets.csv")
+def encodeProductionCompanyToOne(df):
+    """
+    OneHotEncode column production_compnaies
+    Json loads does not work here
+    Regex to extract first value
+    """
     new_values = []
-    for index, row in movies.iterrows():
+    for index, row in df.iterrows():
         new_value = row["production_companies"].replace("[", "").replace("]", "").replace("{\'name\': ", "").replace(
             "}", "").replace("\'", "")
         new_value = re.sub(", id: \d+", "", new_value)
