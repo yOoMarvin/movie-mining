@@ -1,6 +1,9 @@
 import pandas as pd
+<<<<<<< HEAD
 import matplotlib.pyplot as plt
 import numpy
+=======
+>>>>>>> master
 
 data = pd.read_csv('../../data/interim/only_useful_datasets.csv')
 data.head()
@@ -10,6 +13,7 @@ data['productivity'] = data['revenue'] / data['budget']
 
 
 data_filtered = data[['original_title', 'budget','revenue', 'release_date', 'productivity']]
+<<<<<<< HEAD
 data_filtered[ data_filtered['revenue']<100 ].sort_values(by='revenue', ascending=False)
 
 
@@ -35,3 +39,6 @@ final_list = [x for x in arr if (x > mean - 0.5 * sd)]
 final_list = [x for x in final_list if (x < mean + 0.5 * sd)]
 final_list
 len(final_list)
+=======
+data_filtered[ data_filtered['budget']>500000 ].sort_values(by='productivity', ascending=False)
+>>>>>>> master
