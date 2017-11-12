@@ -12,7 +12,7 @@ def encodeProductionCompany():
     new_values_encoded = pd.Series(new_values).str.get_dummies()
     return new_values_encoded
 
-def encodeProductionCopmpanyToOne():
+def encodeProductionCompanyToOne():
     movies = pd.read_csv("../../data/interim/only_useful_datasets.csv")
     new_values = []
     for index, row in movies.iterrows():
@@ -24,4 +24,4 @@ def encodeProductionCopmpanyToOne():
     new_values_encoded = pd.get_dummies(new_values)
     return new_values_encoded
 
-encodeProductionCopmpanyToOne()
+encodeProductionCompany()
