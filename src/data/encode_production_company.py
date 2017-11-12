@@ -23,5 +23,3 @@ def encodeProductionCompanyToOne():
         new_values.append(new_value)
     new_values_encoded = pd.get_dummies(new_values)
     return new_values_encoded
-
-encodeProductionCompany()
