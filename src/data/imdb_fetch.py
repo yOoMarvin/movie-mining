@@ -24,19 +24,28 @@ df = df[df.imdb_id != '0']
 df.sort_values(by='imdb_id', ascending=False)
 
 
-
+#base url for request. Later: append the imdb_id
 base_url = "https://theimdbapi.org/api/movie?movie_id="
 
 
 for index, row in df.iterrows():
     imdb_id = row['imdb_id']
+    # build url
     url = base_url + imdb_id
-    print(url)
 
+    # api call
+    r = requests.get(url)
+    # fetch json
+    j = r.json()
 
+    # Budget processing
+    gross_raw = j['metadata']['gross']
+    # split gross into array because of additional information
+    gross_processed = gross_raw.split(' ')[0]
+    # only extract digits from processed gross
+    gross = ''.join([i for i in gross_processed if i.isdigit()])
 
-r = requests.get('https://theimdbapi.org/api/movie?movie_id=tt0114709')
-
-
-j = r.json()
-j['metadata']['gross']
+    #prints for debugging
+    print(gross_raw)
+    print(gross_processed)
+    print(float(gross))
