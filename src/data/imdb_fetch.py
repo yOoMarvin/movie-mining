@@ -46,6 +46,11 @@ for index, row in df.iterrows():
     gross = ''.join([i for i in gross_processed if i.isdigit()])
 
     #prints for debugging
-    print(gross_raw)
-    print(gross_processed)
+    #print(gross_raw)
+    #print(gross_processed)
     print(float(gross))
+
+    revenue_result = float(gross)
+    # check if the gross is not null, then write it to the df
+    #if revenue_result != 0:
+        #row['revenue'] = revenue_result
