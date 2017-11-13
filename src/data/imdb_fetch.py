@@ -40,11 +40,14 @@ for index, row in df.iterrows():
 
     # Budget processing
     revenue_raw = j['metadata']['gross']
+    budget_raw = j['metadata']['budget']
 
-    revenue = process_json(gross_raw)
+    revenue = process_json(revenue_raw)
+    budget = process_json(budget_raw)
 
     #prints for debugging
-    print(revenue)
+    print('Revenue: ' + str(revenue))
+    print('Budget:   ' + str(budget))
 
     # check if the revenue is not null, then write it to the df
     #if revenue != 0:
@@ -57,4 +60,8 @@ def process_json(json):
     # only extract digits from processed json
     result = ''.join([i for i in json_processed if i.isdigit()])
 
-    return float(result)
+    #try to cast result to float, if fails, return 0 because there is no value from imdb
+    try:
+        return float(result)
+    except ValueError:
+        return 0
