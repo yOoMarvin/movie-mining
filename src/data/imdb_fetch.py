@@ -30,9 +30,8 @@ base_url = "https://theimdbapi.org/api/movie?movie_id="
 
 for index, row in df.iterrows():
     imdb_id = row['imdb_id']
-    if imdb_id != imdb_id:
-        url = base_url + imdb_id
-        print(url)
+    url = base_url + imdb_id
+    print(url)
 
 
 
