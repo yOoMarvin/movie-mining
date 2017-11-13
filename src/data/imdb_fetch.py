@@ -39,18 +39,22 @@ for index, row in df.iterrows():
     j = r.json()
 
     # Budget processing
-    gross_raw = j['metadata']['gross']
-    # split gross into array because of additional information
-    gross_processed = gross_raw.split(' ')[0]
-    # only extract digits from processed gross
-    gross = ''.join([i for i in gross_processed if i.isdigit()])
+    revenue_raw = j['metadata']['gross']
+
+    revenue = process_json(gross_raw)
 
     #prints for debugging
-    #print(gross_raw)
-    #print(gross_processed)
-    print(float(gross))
+    print(revenue)
 
-    revenue_result = float(gross)
-    # check if the gross is not null, then write it to the df
-    #if revenue_result != 0:
-        #row['revenue'] = revenue_result
+    # check if the revenue is not null, then write it to the df
+    #if revenue != 0:
+        #row['revenue'] = revenue
+
+
+def process_json(json):
+    # split  into array because of additional information
+    json_processed = json.split(' ')[0]
+    # only extract digits from processed json
+    result = ''.join([i for i in json_processed if i.isdigit()])
+
+    return float(result)
