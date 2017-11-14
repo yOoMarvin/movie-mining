@@ -16,10 +16,55 @@ df = df[df.imdb_id != '0']
 
 
 #base url for request. Later: append the imdb_id
-base_url = "https://theimdbapi.org/api/movie?movie_id="
+base_url = "http://theimdbapi.org/api/movie?movie_id="
 
 #initialize the url list
 urls = []
 
+# fill the url list
 for index, row in df.iterrows():
     urls.append(base_url + row['imdb_id'])
+
+urls
+
+
+
+
+
+
+# async handling
+
+async def fetch(url, session):
+    async with ClientSession() as session:
+        async with session.get(url) as response:
+            result = await response.json()
+            return result
+
+
+# Run function, create a list of tasks, gather all responses at the end
+async def run(r):
+    # global variable for access the results later
+    global imdb
+    tasks = []
+
+    # Fetch all responses within one Client session,
+    # keep connection alive for all requests.
+    async with ClientSession() as session:
+        for i in range(r):
+            task = asyncio.ensure_future(fetch(urls[i], session))
+            tasks.append(task)
+
+        responses = await asyncio.gather(*tasks)
+        # you now have all response bodies in this variable
+        # set the global variable to the value of the responses
+        # results in a list of jsons
+        imdb = responses
+
+
+# Running the async call
+loop = asyncio.get_event_loop()
+future = asyncio.ensure_future(run(10))
+loop.run_until_complete(future)
+
+# Debug print
+print(imdb)
