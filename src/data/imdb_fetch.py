@@ -12,7 +12,7 @@
 
 import pandas as pd
 import requests
-import aiohttp
+#import aiohttp
 
 df = pd.read_csv('../../data/interim/useful_with_imdb.csv')
 #remove NaN's from imdb_id column
@@ -24,6 +24,24 @@ df.sort_values(by='imdb_id', ascending=False)
 
 #base url for request. Later: append the imdb_id
 base_url = "https://theimdbapi.org/api/movie?movie_id="
+
+
+def process_json(json):
+    # split  into array because of additional information
+    json_processed = json.split(' ')[0]
+    # only extract digits from processed json
+    result = ''.join([i for i in json_processed if i.isdigit()])
+
+    #try to cast result to float, if fails, return 0 because there is no value from imdb
+    try:
+        return float(result)
+    except ValueError:
+        return 0
+
+
+
+
+# main
 
 
 for index, row in df.iterrows():
@@ -48,18 +66,11 @@ for index, row in df.iterrows():
     print('Budget:   ' + str(budget))
 
     # check if the revenue is not null, then write it to the df
-    #if revenue != 0:
-        #row['revenue'] = revenue
+    if revenue != 0:
+        row['revenue'] = revenue
+
+    if budget != 0:
+        row['budget'] = budget
 
 
-def process_json(json):
-    # split  into array because of additional information
-    json_processed = json.split(' ')[0]
-    # only extract digits from processed json
-    result = ''.join([i for i in json_processed if i.isdigit()])
-
-    #try to cast result to float, if fails, return 0 because there is no value from imdb
-    try:
-        return float(result)
-    except ValueError:
-        return 0
+# TO DO: Export the df as csv
