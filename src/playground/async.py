@@ -10,7 +10,7 @@ df = df[pd.notnull(df['imdb_id'])]
 df = df[df.imdb_id != '0']
 
 # Part of the df
-part = df.head(50)
+part = df.head(10)
 
 
 async def hello(url):
@@ -37,6 +37,10 @@ for index, row in part.iterrows():
     # build url
     url = base_url + imdb_id
 
-    task = asyncio.ensure_future(hello(url.format(index)))
+    task = asyncio.ensure_future(hello(url))
     tasks.append(task)
+    print(url)
+
+tasks
+
 loop.run_until_complete(asyncio.wait(tasks))
