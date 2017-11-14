@@ -1,6 +1,7 @@
 import asyncio
 from aiohttp import ClientSession
 import pandas as pd
+import json
 
 
 # Try out something new:
@@ -24,8 +25,6 @@ urls = []
 # fill the url list
 for index, row in df.iterrows():
     urls.append(base_url + row['imdb_id'])
-
-urls
 
 
 
@@ -63,8 +62,15 @@ async def run(r):
 
 # Running the async call
 loop = asyncio.get_event_loop()
-future = asyncio.ensure_future(run(10))
+future = asyncio.ensure_future(run(50))
 loop.run_until_complete(future)
 
 # Debug print
-print(imdb)
+#print(imdb)
+
+
+# Writing the list into a file
+f = open('output.txt', 'w')
+for item in imdb:
+    json.dump(item, f)
+f.close()
