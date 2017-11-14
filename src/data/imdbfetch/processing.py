@@ -2,7 +2,15 @@
 
 
 import pandas as pd
+import json
+from pprint import pprint
 
+
+
+with open('output.json', encoding='utf-8') as data_file:
+   data = json.loads(data_file.read())
+
+pprint(data)
 
 
 
