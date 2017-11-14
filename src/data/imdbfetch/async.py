@@ -9,7 +9,7 @@ import json
 # Fetch them all and write every json response in a file
 # In another script process that file
 
-df = pd.read_csv('../../data/raw/movies_metadata.csv')
+df = pd.read_csv('../../../data/raw/movies_metadata.csv')
 #remove NaN's from imdb_id column
 df = df[pd.notnull(df['imdb_id'])]
 #remove rows where imdb_id is 0
@@ -62,15 +62,16 @@ async def run(r):
 
 # Running the async call
 loop = asyncio.get_event_loop()
-future = asyncio.ensure_future(run(50))
+future = asyncio.ensure_future(run(5))
 loop.run_until_complete(future)
 
 # Debug print
 #print(imdb)
 
-
 # Writing the list into a file
-f = open('output.txt', 'w')
+f = open('output.json', 'w')
 for item in imdb:
-    json.dump(item, f)
+    json.dump(item, f, separators=(',', ':'))
+    # adding a comma to the end of each json object
+    f.write(','.strip('"'))
 f.close()
