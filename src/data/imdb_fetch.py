@@ -11,9 +11,8 @@
 
 
 import pandas as pd
-import numpy as np
 import requests
-import math
+import aiohttp
 
 df = pd.read_csv('../../data/raw/movies_metadata.csv')
 #remove NaN's from imdb_id column
