@@ -14,14 +14,13 @@ import pandas as pd
 import requests
 import aiohttp
 
-df = pd.read_csv('../../data/raw/movies_metadata.csv')
+df = pd.read_csv('../../data/interim/useful_with_imdb.csv')
 #remove NaN's from imdb_id column
 df = df[pd.notnull(df['imdb_id'])]
 #remove rows where imdb_id is 0
 df = df[df.imdb_id != '0']
 
 df.sort_values(by='imdb_id', ascending=False)
-
 
 #base url for request. Later: append the imdb_id
 base_url = "https://theimdbapi.org/api/movie?movie_id="
