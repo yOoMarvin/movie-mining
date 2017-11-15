@@ -36,15 +36,21 @@ for index, row in df.iterrows():
 async def fetch(url, session):
     async with ClientSession() as session:
         async with session.get(url) as response:
+            # Todo: Try to just return the needed values!
             result = await response.json()
             return result
 
+async def bound_fetch(sem, url, session):
+    # Getter function with semaphore.
+    async with sem:
+        await fetch(url, session)
 
 # Run function, create a list of tasks, gather all responses at the end
 async def run(r):
     # global variable for access the results later
     global imdb
     tasks = []
+    sem = asyncio.Semaphore(1000)
 
     # Fetch all responses within one Client session,
     # keep connection alive for all requests.
@@ -62,7 +68,7 @@ async def run(r):
 
 # Running the async call
 loop = asyncio.get_event_loop()
-future = asyncio.ensure_future(run(5))
+future = asyncio.ensure_future(run(10))
 loop.run_until_complete(future)
 
 # Debug print

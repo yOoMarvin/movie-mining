@@ -29,7 +29,7 @@ for i, item in enumerate(data):
                                             'budget': budget},
                                              index=[i]))
 
-result.head()
+result
 
 
 
