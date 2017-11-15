@@ -69,9 +69,19 @@ loop.run_until_complete(future)
 #print(imdb)
 
 # Writing the list into a file
+# Important: You have to add the [] to make sure the file is an array
+# Important: Also add the , for separating the the objects
+# Important: The .strip('"') kills the "" that are written in the file
 f = open('output.json', 'w')
+f.write("[".strip('"'))
+
 for item in imdb:
     json.dump(item, f, separators=(',', ':'))
     # adding a comma to the end of each json object
     f.write(','.strip('"'))
+else:
+    # Don't append the "," for the last item in the list!
+    json.dump(item, f, separators=(',', ':'))
+
+f.write("]".strip('"'))
 f.close()
