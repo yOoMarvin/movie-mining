@@ -10,11 +10,13 @@ def encodeGenre(df):
     Seperate them with | for MultipleHotEncoding
     """
     new_values = []
+    indices = []
     for index, row in df.iterrows():
         new_value = re.sub("{(\'id\': \d+, )*\'name\': ", "", row["genres"])
         new_value = new_value.replace("[", "").replace("]", "").replace("\'", "").replace("}", "").replace(", ", "|")
+        indices.append(index)
         new_values.append(new_value)
-    new_values_encoded = pd.Series(new_values).str.get_dummies()
+    new_values_encoded = pd.Series(new_values, index=indices).str.get_dummies()
     return new_values_encoded
 
 def encodeGenreToOne(df):
