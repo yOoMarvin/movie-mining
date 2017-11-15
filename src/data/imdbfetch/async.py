@@ -36,6 +36,7 @@ for index, row in df.iterrows():
 async def fetch(url, session):
     async with ClientSession() as session:
         async with session.get(url) as response:
+            print(url)
             # Todo: Try to just return the needed values!
             result = await response.json()
             return result
@@ -68,7 +69,7 @@ async def run(r):
 
 # Running the async call
 loop = asyncio.get_event_loop()
-future = asyncio.ensure_future(run(10))
+future = asyncio.ensure_future(run(1000))
 loop.run_until_complete(future)
 
 # Debug print
