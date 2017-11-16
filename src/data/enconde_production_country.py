@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 
-def encodePoductionCountry(df):
+def encodeProductionCountry(df):
     """
     MultipleHotEncode column production_countries
     Json loads does not work here
@@ -9,12 +9,14 @@ def encodePoductionCountry(df):
     Seperate them with | for MultipleHotEncoding
     """
     new_values = []
+    indices = []
     for index, row in df.iterrows():
         new_value = re.sub("{\'iso_\d+_\d+\': ", "", row["production_countries"])
         new_value = re.sub(", \'name\': \'(\w+ *)*\'", "", new_value)
         new_value = new_value.replace("[", "").replace("]", "").replace("\'", "").replace("}", "").replace(", ", "|")
+        indices.append(index)
         new_values.append(new_value)
-    new_values_encoded = pd.Series(new_values).str.get_dummies()
+    new_values_encoded = pd.Series(new_values, index=indices).str.get_dummies()
     return new_values_encoded
 
 def encodePoductionCountryToOne(df):
