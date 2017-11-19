@@ -43,6 +43,7 @@ metadata = metadata.drop([
         ,'production_countries'
         ,'production_companies'
         ,'quarter'
+        ,'productivity'
 ],1)
 
 print('dropped irrelevant data')
