@@ -35,13 +35,21 @@ metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
 print('encoded productivity, company,country and genre')
 
 #drop irrelevant data
-metadata = metadata.drop(
-        ['budget', 'genres', 'revenue', 'release_date', 'production_countries', 'production_companies'], 1)
+metadata = metadata.drop([
+        'budget'
+        ,'genres'
+        ,'revenue'
+        ,'release_date'
+        ,'production_countries'
+        ,'production_companies'
+        ,'quarter'
+],1)
 
 print('dropped irrelevant data')
 
 #normalize data here if necessary. Input: df and string, Output: completed dataframe with normalized column Example: runtime
 metadata = nc.normalize_column_data(metadata, 'runtime')
+metadata = nc.normalize_column_data(metadata, 'year')
 print('data normalized')
 
 #safe dataset to file, important: encode as UTF-8
