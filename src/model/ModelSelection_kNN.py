@@ -26,7 +26,7 @@ c.dropColumns([
 scorer = c.f1(average="micro") # use F1 score with micro averaging
 estimator = c.knn() # get kNN estimator
 cv = c.fold(
-        k=2
+        k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
