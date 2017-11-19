@@ -4,6 +4,9 @@ A data mining project which will predict the success of future movies. This is a
 ## Generate new Dataset
 In order to generate a new Dataset for later usage the following two scripts have to be executed.
 
+1. Execute preprocess_data.py
+2. Execute train_test_split.py
+
 ### preprocess_data.py
 A script to perform preprocessing on the raw data. It involves the following steps:
 
