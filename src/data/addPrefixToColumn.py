@@ -7,5 +7,5 @@ def addPrefixToColumn(df, prefix):
     """
     for column in df:
         if(column != "id:"):
-            df = df.rename(columns={column: prefix+"_"+column})
+            df = df.rename(columns={column: prefix+"_"+str(column)})
     return df
