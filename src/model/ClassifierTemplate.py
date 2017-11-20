@@ -50,6 +50,10 @@ class Classifier:
     
     # drop all given columns
     def dropColumns(self,columns):
+        """
+            Drop given columns from the classifier DataFrame
+            :param columns: array of column names
+        """
         self.data = self.data.drop(columns,axis=1)
     
     # drop all rows containing missing values
