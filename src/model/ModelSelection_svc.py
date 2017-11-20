@@ -14,8 +14,7 @@ c = ct.Classifier(df,"productivity_binned")
 # drop columns not needed for Classification
 c.dropColumns([
         "original_title",
-        "id.1",
-        "productivity"
+        "id.1"
 ])
 
 # get parameters for GridSearch
