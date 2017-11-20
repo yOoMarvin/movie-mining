@@ -10,6 +10,7 @@ import encode_production_company as epc
 import encode_quarter as eq
 import enconde_production_country as ep_country
 import normalize_column as nc
+import train_test_split as splitter
 
 # read csv file with pre-limited data
 metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
@@ -32,7 +33,11 @@ metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata)], axis=1)
 metadata = pd.concat([metadata, ep_country.encodeProductionCountry(metadata)], axis=1)
 metadata = pd.concat([metadata, eg.encodeGenre(metadata)], axis=1)
 metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
-print('encoded productivity, company,country and genre')
+print('encoded productivity, company, country and genre')
+
+# keep productivity in a seperate file
+productivity = metadata[["productivity","productivity_binned"]]
+productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
 
 #drop irrelevant data
 metadata = metadata.drop([
@@ -56,3 +61,6 @@ print('data normalized')
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 print('new dataset should be safed, doublcheck in folder')
+
+# execute train-test-split
+splitter.split_dataset()

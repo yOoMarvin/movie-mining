@@ -12,4 +12,9 @@ def interesting_columns(metadata):
                 'production_countries', 'production_companies', 'runtime']]
     # query dataset based on valid revenue and valid budget, save to csv file
     metadata = metadata.query('revenue > 100000 & budget > 100000 & genres != "[]" & production_companies != "[]"')
+    
+    print("deleting duplicates. before: ",len(metadata))
+    metadata = metadata.drop_duplicates(keep="first")
+    print("deleting duplicates. after: ",len(metadata))
+    
     return metadata
