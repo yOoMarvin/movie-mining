@@ -6,7 +6,7 @@ import numpy as np
 # this method removes the initial column and replaces it with the normalized column
 
 def normalize_column_data(df, column_name):
-    x = df[column_name]
+    x = df[column_name].astype(np.float64)
     x = x.values.reshape(-1, 1)
 
     # Create a minimum and maximum processor object
