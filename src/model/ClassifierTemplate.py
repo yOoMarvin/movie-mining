@@ -22,8 +22,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn import tree
 from sklearn.neighbors import NearestCentroid
+from sklearn.svm import LinearSVC
 
 from sklearn.model_selection import StratifiedKFold
+
+
 
 class Classifier:
 
@@ -141,6 +144,9 @@ class Classifier:
 
     def centroid(self):
         return NearestCentroid()
+
+    def svc(self):
+        return LinearSVC()
 
     def f1(self,pos_label = 1,average = 'binary'):
         # use first value of truth if not defined
