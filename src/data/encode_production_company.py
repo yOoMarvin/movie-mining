@@ -55,7 +55,7 @@ def encodeProductionCompany(df, filter=False, threshold=0.0005):
     return new_values_encoded
 
 
-"""
+
 def encodeProductionCompanyToOne(df, filter=False, threshold=0.0005):
     """
     OneHotEncode column production_compnaies
@@ -78,7 +78,7 @@ def encodeProductionCompanyToOne(df, filter=False, threshold=0.0005):
         new_values_encoded = filterWithThreshold(new_values_encoded, threshold)
     new_values_encoded = addPrefixToColumn(new_values_encoded, "company")
     return new_values_encoded
-"""
+
 
 def filterWithThreshold(df, threshold):
     """
