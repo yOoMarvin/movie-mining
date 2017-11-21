@@ -12,6 +12,7 @@ import enconde_production_country as ep_country
 import normalize_column as nc
 import encode_actors as ea
 import train_test_split as splitter
+import encode_directors as ed
 
 # read in raw csv files
 metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
@@ -48,7 +49,6 @@ print(status + 'encoded company')
 
 # metadata: normalize data here if necessary. Input: df and string, Output: completed dataframe with normalized column Example: runtime
 metadata = nc.normalize_column_data(metadata, 'runtime')
-metadata = nc.normalize_column_data(metadata, 'year')
 print(status + 'data normalized')
 
 
@@ -56,17 +56,24 @@ print(status + 'data normalized')
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned"]]
 productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
+print(status + 'productivity safed in different file...done')
 
 
 #process actor column (returned)
-actors_column_processed = ea.encodeActorsToOne(metadata);
+actors_column_processed = ea.encodeActorsToOne(metadata)
 actors_column_processed = actors_column_processed.reset_index()
 actors_column_processed = actors_column_processed.set_index(metadata.index)
 #print(actors_column_processed.keys())
 # print(metadata.head())
 
+# preprocess directors_column
+directors_column_processed = ed.encodeDirectorsToOne(metadata)
+directors_column_processed = directors_column_processed.reset_index()
+directors_column_processed = directors_column_processed.set_index(metadata.index)
+
 # metadata: merge again with metadata
 metadata = pd.concat([metadata, actors_column_processed], axis=1)
+metadata = pd.concat([metadata, directors_column_processed], axis=1)
 
 # metadata: drop irrelevant data
 metadata = metadata.drop([
@@ -77,7 +84,10 @@ metadata = metadata.drop([
         ,'production_countries'
         ,'production_companies'
         ,'quarter'
+        ,'year' #dropped year because it will cause unseen data for future values
         ,'productivity'
+        ,'cast' #not needed anymore after preprocessing
+        ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
 print(metadata.keys())
