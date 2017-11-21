@@ -24,6 +24,9 @@ from sklearn import tree
 from sklearn.neighbors import NearestCentroid
 
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_predict
+from sklearn.model_selection import cross_val_score
+from sklearn import metrics
 
 
 # Custom imports
@@ -33,31 +36,25 @@ import ClassifierTemplate as ct
 
 
 # Import data
-data_train = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
-data_test = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
+data = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 
 # DataFrame containing label (!)
-df_train = pd.DataFrame(data_train)
-df_test = pd.DataFrame(data_test)
+df = pd.DataFrame(data)
 
-# Targets
-target_train = df_train['productivity_binned']
-target_test = df_test['productivity_binned']
+# Target
+target = df['productivity_binned']
 
 # Drop unwanted columns
 columns_to_drop = [
         "original_title",
         "id.1"
 ]
-data_train = data_train.drop(columns_to_drop,axis=1)
-data_test = data_test.drop(columns_to_drop, axis=1)
+df = df.drop(columns_to_drop, axis=1)
+
+
 
 # KStratifiedFold with random_state = 42
 cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-
-
-
-
 
 
 
@@ -71,15 +68,14 @@ knn_estimator = KNeighborsClassifier(n_neighbors=3,
                             p=2,
                             metric="manhattan")
 
-# Error here... TO DO!
-knn = knn_estimator.fit(df_train, target_train)
-knn_predict = knn_estimator.predict(df_test)
+#ERROR HERE
+knn_estimator.fit(df, target)
 
-# Print report
-classification_report(target_test,knn_predict)
-
+# Predict with cross validation
+knn_scores = cross_val_score(knn_estimator, df, target, cv=cv, scoring='f1')
 
 
+print("KNN F1 Score: %0.2f (+/- %0.2f)" % (knn_scores.mean(), scores.std() * 2))
 
 
 
