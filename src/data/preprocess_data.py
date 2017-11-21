@@ -56,6 +56,7 @@ print(status + 'data normalized')
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned"]]
 productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
+print(status + 'productivity safed in different file...done')
 
 
 #process actor column (returned)
@@ -85,7 +86,7 @@ metadata = metadata.drop([
         ,'quarter'
         ,'year' #dropped year because it will cause unseen data for future values
         ,'productivity'
-        ,'cast'
+        ,'cast' #not needed anymore after preprocessing
         ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
