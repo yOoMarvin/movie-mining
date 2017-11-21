@@ -84,9 +84,9 @@ metadata = metadata.drop([
         ,'production_countries'
         ,'production_companies'
         ,'quarter'
-        ,'year' #dropped year because it will cause unseen data for future values
+        ,'year' # dropped year because it will cause unseen data for future values
         ,'productivity'
-        ,'cast' #not needed anymore after preprocessing
+        ,'cast' # not needed anymore after preprocessing
         ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')

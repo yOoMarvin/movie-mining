@@ -188,7 +188,7 @@ class Classifier:
             results = grid_search_estimator.cv_results_
             for i in range(len(results['params'])):
                 print("{}, {}".format(results['params'][i], results['mean_test_score'][i]))
-            
+
         return grid_search_estimator
     
     def gridSearchBestScore(self,gs):
