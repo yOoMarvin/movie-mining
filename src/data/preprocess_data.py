@@ -11,6 +11,7 @@ import encode_quarter as eq
 import enconde_production_country as ep_country
 import normalize_column as nc
 import encode_actors as ea
+import train_test_split as splitter
 
 # read in raw csv files
 metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
@@ -38,6 +39,7 @@ print(status + 'encoded country')
 metadata = pd.concat([metadata, eg.encodeGenre(metadata)], axis=1)
 print(status + 'encoded genre')
 metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
+
 print(status + 'encoded productivity')
 #print(epc.encodeProductionCompany(metadata))
 metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata)], axis=1)
@@ -48,6 +50,12 @@ print(status + 'encoded company')
 metadata = nc.normalize_column_data(metadata, 'runtime')
 metadata = nc.normalize_column_data(metadata, 'year')
 print(status + 'data normalized')
+
+
+
+# keep productivity in a seperate file
+productivity = metadata[["productivity","productivity_binned"]]
+productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
 
 
 #process actor column (returned)
@@ -72,9 +80,12 @@ metadata = metadata.drop([
         ,'productivity'
 ],1)
 print(status + 'dropped irrelevant data')
-
 print(metadata.keys())
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
-print('new dataset should be saved, doublcheck in folder')
+
+print('new dataset should be safed, doublcheck in folder')
+
+# execute train-test-split
+splitter.split_dataset()
 
