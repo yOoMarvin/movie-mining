@@ -66,7 +66,7 @@ actors_column_processed = actors_column_processed.set_index(metadata.index)
 # print(metadata.head())
 
 # preprocess directors_column
-directors_column_processed = ea.encodeDirectorsToOne(metadata)
+directors_column_processed = ed.encodeDirectorsToOne(metadata)
 directors_column_processed = directors_column_processed.reset_index()
 directors_column_processed = directors_column_processed.set_index(metadata.index)
 
@@ -85,6 +85,8 @@ metadata = metadata.drop([
         ,'quarter'
         ,'year' #dropped year because it will cause unseen data for future values
         ,'productivity'
+        ,'cast'
+        ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
 print(metadata.keys())
