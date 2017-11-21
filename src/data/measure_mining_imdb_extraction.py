@@ -11,17 +11,21 @@ import numpy as np
 movies = pd.read_csv("../../data/external/imdb_measures.csv", index_col=0)
 
 # extract budgets
-budget = movies["raw"].str.replace(r".+Budget</h5>\\n([$,0-9]+) \(.+",r"\1")
-budget = budget.str.replace(r"^(?!\$).+","")
-budget = budget.replace("",np.nan)
+budget = movies["raw"]
+budget = budget[budget.str.contains("Budget</h5>").fillna(False)]
+budget = budget.str.replace(r".+?Budget</h5>\\n([$,0-9]+) \(.+",r"\1")
+#budget = budget.str.replace(r"^(?!\$).+","")
+#budget = budget.replace("",np.nan)
 
 df_budget = pd.DataFrame(budget)
 df_budget = df_budget.dropna()
 
 # extract revenue
-revenue = movies["raw"].str.replace(r".*?(\$[0-9,]+)\s\([Ww]orldwide\).*",r"\1")
-revenue = revenue.str.replace(r"^(?!\$).+","")
-revenue = revenue.replace("",np.nan)
+revenue = movies["raw"]
+revenue = revenue[revenue.str.contains(r"\([Ww]orldwide\)").fillna(False)]
+revenue = revenue.str.replace(r".*?(\$[0-9,]+)\s\([Ww]orldwide\).*",r"\1")
+#revenue = revenue.str.replace(r"^(?!\$).+","")
+#revenue = revenue.replace("",np.nan)
 
 df_revenue = pd.DataFrame(revenue)
 df_revenue = df_revenue.dropna()
