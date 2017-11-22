@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy
 
-prd = pd.read_csv('../../data/processed/productivity.csv')
+prd = pd.read_csv('../../data/processed/productivity.csv', index_col=0)
 prd.head()
 
 df = pd.read_csv('../../data/interim/only_useful_datasets.csv')
