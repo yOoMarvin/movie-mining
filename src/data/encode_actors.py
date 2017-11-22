@@ -15,7 +15,7 @@ def encodeActorsToOne(df, filter=False, threshold=0.0005):
     prefix = "actor_"
     for index, row in df.iterrows():
         actor = re.search("\'name\': \'\w+(-* *\w*)*\'", row['cast'])
-        if not(actor is None):
+        if not (actor is None):
             actor = actor.group().replace("'name': ", "").replace("'", "")
             actor = prefix + actor
             actors.append(actor)
@@ -24,8 +24,29 @@ def encodeActorsToOne(df, filter=False, threshold=0.0005):
             actors.append("")
     actors_encoded = pd.get_dummies(actors)
 
-    #actors_encoded['id'] = pd.Series(df['id'])
-    if(filter):
+    # actors_encoded['id'] = pd.Series(df['id'])
+    if (filter):
         actors_encoded = epc.filterWithThreshold(actors_encoded, threshold)
-    #actors_encoded = epc.addPrefixToColumn(new_values_encoded, "actors")
+    # actors_encoded = epc.addPrefixToColumn(new_values_encoded, "actors")
     return actors_encoded
+
+
+def actorsForHistogram(df):
+    actors = []
+    indices = []
+    prefix = "actor_"
+    for index, row in df.iterrows():
+        actor = re.search("\'name\': \'\w+(-* *\w*)*\'", row['cast'])
+        if not (actor is None):
+            actor = actor.group().replace("'name': ", "").replace("'", "")
+            actor = prefix + actor
+            actors.append(actor)
+            indices.append(index)
+        else:
+            actors.append("")
+    new_values_encoded = pd.DataFrame()
+    new_values_encoded['test'] = pd.Series(actors)
+    #new_values_encoded = pd.DataFrame(actors, columns=['test'])
+    #new_values_encoded.rename(columns={0: 'log(gdp)'}, inplace=True)
+
+    return  new_values_encoded
