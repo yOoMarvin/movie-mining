@@ -4,6 +4,12 @@ Created on Thu Nov 16 13:07:06 2017
 @author: Marvin
 """
 
+# GOAL OF SCRIPT:
+# place for all the best classifiers. Fit them here with best params
+# Predict with cross validation
+# Plot roc curve on all
+
+
 from sklearn import preprocessing
 import numpy as np
 import pandas as pd
@@ -13,17 +19,11 @@ from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
 
 
-# Custom imports
-# Do not import all classifiers, rather look for the best result and fit them manually
-
-
 
 
 # Import data
 df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 print('data imported')
-# DataFrame containing label (!)
-#df = pd.DataFrame(data)
 
 # Target
 target = df['productivity_binned']
@@ -53,18 +53,12 @@ knn_estimator = KNeighborsClassifier(n_neighbors=3,
                             p=2,
                             metric="manhattan")
 
-#ERROR HERE
-#print(target.values)
-#lb = LabelEncoder()
-#target = lb.fit_transform(target)
-#print(target)
+# Fitting the model
 knn_estimator.fit(df, target)
 print('done doing the fit')
 
 # Predict with cross validation
 knn_scores = cross_val_score(knn_estimator, df, target, cv=cv, scoring='f1_micro')
-
-
 print("KNN F1 Score: %0.2f (+/- %0.2f)" % (knn_scores.mean(), knn_scores.std() * 2))
 
 
