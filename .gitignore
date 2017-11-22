@@ -73,3 +73,10 @@ scratch/
 # Jetbrains idea folder
 .idea/
 data/external/thenumbers_measures.csv
+data/interim/companies.csv
+data/interim/companies_cleaned.csv
+data/interim/companies_to_movies.csv
+data/interim/only_useful_datasets.csv
+data/processed/productivity.csv
+data/processed/test_set.csv
+data/processed/train_set.csv

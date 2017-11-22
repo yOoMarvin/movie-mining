@@ -24,6 +24,8 @@ def encodeDirectorsToOne(df, filter=False, threshold=0.0005):
             indices.append(index)
         else:
             directors.append("")
+            indices.append(index)
+    directors = pd.Series(directors,index=indices)
     directors_encoded = pd.get_dummies(directors)
 
     #actors_encoded['id'] = pd.Series(df['id'])
