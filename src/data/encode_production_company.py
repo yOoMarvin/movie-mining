@@ -33,12 +33,16 @@ def encodeProductionCompany(df, filter=False, threshold=0.0005):
     """
     new_values = []
     indices = []
+    prefix = "company_"
+
     for index, row in df.iterrows():
         new_value = row["production_companies"].replace("[", "").replace("]", "").replace("{\'name\': ", "").replace("}", "").replace("\'", "")
         new_value = re.sub(", id: \d+", "", new_value)
         new_value = new_value.replace(", ", "|")
+        #new_value = prefix + new_value
         new_values.append(new_value)
         indices.append(index)
+
     new_values_encoded = pd.Series(new_values,index=indices).str.get_dummies()
     """
     
@@ -46,10 +50,12 @@ def encodeProductionCompany(df, filter=False, threshold=0.0005):
     if (filter):    
        new_values_encoded = filterWithThreshold(new_values_encoded, threshold)
     new_values_encoded = addPrefixToColumn(new_values_encoded, "company")
+    print('done adding prefix')
+
     return new_values_encoded
 
 
-"""
+
 def encodeProductionCompanyToOne(df, filter=False, threshold=0.0005):
     """
     OneHotEncode column production_compnaies
@@ -72,7 +78,7 @@ def encodeProductionCompanyToOne(df, filter=False, threshold=0.0005):
         new_values_encoded = filterWithThreshold(new_values_encoded, threshold)
     new_values_encoded = addPrefixToColumn(new_values_encoded, "company")
     return new_values_encoded
-"""
+
 
 def filterWithThreshold(df, threshold):
     """
