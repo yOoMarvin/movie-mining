@@ -69,12 +69,13 @@ actors_column_processed = ea.encodeActorsToOne(metadata)
 actors_column_processed = actors_column_processed.reset_index()
 actors_column_processed = actors_column_processed.set_index(metadata.index)
 #print(actors_column_processed.keys())
-# print(metadata.head())
+print(status + 'encoded actors')
 
 # preprocess directors_column
 directors_column_processed = ed.encodeDirectorsToOne(metadata)
 directors_column_processed = directors_column_processed.reset_index()
 directors_column_processed = directors_column_processed.set_index(metadata.index)
+print(status + 'encoded directors')
 
 # metadata: merge again with metadata
 metadata = pd.concat([metadata, actors_column_processed], axis=1)
@@ -95,7 +96,7 @@ metadata = metadata.drop([
         ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
-print(metadata.keys())
+print(metadata.head())
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 

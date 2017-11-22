@@ -3,7 +3,7 @@ import re
 import encode_production_company as epc
 
 
-def encodeActorsToOne(df, filter=False, threshold=0.0005):
+def encodeActorsToOne(df, filter=True, threshold=0.05):
     """
     reads the first actor out of the credits.csv and onehotencodes it
     joins the encoded actors with the movie id again
@@ -45,7 +45,7 @@ def actorsForHistogram(df):
         else:
             actors.append("")
     new_values_encoded = pd.DataFrame()
-    new_values_encoded['test'] = pd.Series(actors)
+    new_values_encoded['actors'] = pd.Series(actors)
     #new_values_encoded = pd.DataFrame(actors, columns=['test'])
     #new_values_encoded.rename(columns={0: 'log(gdp)'}, inplace=True)
 
