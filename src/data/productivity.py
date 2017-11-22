@@ -32,8 +32,8 @@ def productivity_column(df):
     df_binned = pd.DataFrame(dict(
         productivity_binned = pd.cut(
                 df['productivity']
-                #,bins=3
-                ,bins=[0.0,1.0,2.0,5.0,10000.0] # If bins is a sequence it defines the bin edges allowing for non-uniform bin width
+                # bins from 0-1, 0-2, 2-5, 5-open
+                ,bins=[0.0,1.0,2.0,5.0,float("inf")] # If bins is a sequence it defines the bin edges allowing for non-uniform bin width
                 ,right=False # Indicates whether the bins include the rightmost edge or not
                 ,labels=['unproductive', 'smallProductivity', 'goodProductivity', 'highProductivity']
                 ,include_lowest=True # Whether the first interval should be left-inclusive or not.
