@@ -67,12 +67,24 @@ print("KNN F1 Score: %0.2f (+/- %0.2f)" % (knn_scores.mean(), knn_scores.std() *
 
 
 
+
+
+
+
+
+
+
 ###### ROC CURVES #####
 #define function for computing average roc for cross validation
 #see http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc_crossval.html
 from scipy import interp
 from sklearn.metrics import roc_curve, auc
+from itertools import cycle
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import label_binarize
+from sklearn.multiclass import OneVsRestClassifier
 
+# Function for computing the avg_roc curve for a specific label
 def avg_roc(cv, estimator, data, target, pos_label):
     mean_fpr = np.linspace(0, 1, 100) # = [0.0, 0.01, 0.02, 0.03, ... , 0.99, 1.0]
     tprs = []
@@ -102,20 +114,56 @@ def avg_roc(cv, estimator, data, target, pos_label):
     return mean_fpr, mean_tpr, mean_auc, std_auc
 
 
+# Function for computing rov curve for all labels using micro measurements
+def micro_roc(estimator, data, target):
+    # Import some data to play with
+    X = data
+    y = target
+
+    # Binarize the output
+    y = label_binarize(y, classes=['low', 'middle', 'high']) #Adjust the labels to your need
+    n_classes = y.shape[1]
+
+    # shuffle and split training and test sets --> Need to to this, no cross val here
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5,
+                                                        random_state=0)
+
+    # Learn to predict each class against the other
+    classifier = OneVsRestClassifier(estimator)
+    y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
+
+    # Compute ROC curve and ROC area for each class
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+    for i in range(n_classes):
+        fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+
+    # Compute micro-average ROC curve and ROC area
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
+    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+
+    return fpr, tpr, roc_auc
 
 
 
 
 
 
-# PLOTTING THE CURVE
+
+
+
+
+
+# PLOTTING THE CURVES FOR SPECIFIC LABELS
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(5,5))
 plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
 
-# KNN / 3 NN
-mean_fpr, mean_tpr, mean_auc, std_auc = avg_roc(cv, knn_estimator, df.values, target.values, 'high') #Take care of the label here! Is the binning label
+# KNN / 3 NN - AVG for Label
+mean_fpr, mean_tpr, mean_auc, std_auc = avg_roc(cv, knn_estimator, df.values, target.values, 'low') #Take care of the label here! Is the binning label
 plt.plot(mean_fpr, mean_tpr, label='3-NN (AUC: {:.3f} $\pm$ {:.3f})'.format(mean_auc, std_auc))
 
 plt.xlabel('false positive rate')
@@ -125,4 +173,17 @@ plt.legend()
 plt.show()
 
 
-len(target.values)
+
+# PLOT CURVES FOR MICRO ROC
+plt.figure(figsize=(5,5))
+plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
+
+# KNN / 3 NN - Micro Roc
+fpr, tpr, roc_auc = micro_roc(knn_estimator, df, target)
+plt.plot(fpr[2], tpr[2],lw=2, label='3-NN ROC curve (area = %0.2f)' % roc_auc[2])
+
+plt.xlabel('false positive rate')
+plt.ylabel('true positive rate')
+plt.legend()
+
+plt.show()
