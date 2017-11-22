@@ -25,11 +25,11 @@ print(status + 'limited to interesting columns')
 actors = pd.read_csv("../../data/raw/credits.csv", index_col=2)
 metadata = pd.merge(metadata, actors, left_index=True, right_index=True)
 
-# metadata: convert collection to boolean 
+# metadata: convert collection to boolean
 metadata = cc.collection_to_boolean(metadata)
 print(status + 'collection is converted to boolean')
 
-# metadata: convert year + encode quarter 
+# metadata: convert year + encode quarter
 metadata = cr.years_quarters(metadata)
 metadata = eq.quarter_encoding(metadata)
 print(status + 'year converted, quarter encoded')
@@ -37,11 +37,13 @@ print(status + 'year converted, quarter encoded')
 # metadata: encode company. country, genre and attach to dataframe. This is not done by the method itself
 metadata = pd.concat([metadata, ep_country.encodeProductionCountry(metadata)], axis=1)
 print(status + 'encoded country')
+
 metadata = pd.concat([metadata, eg.encodeGenre(metadata)], axis=1)
 print(status + 'encoded genre')
-metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
 
+metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
 print(status + 'encoded productivity')
+
 #print(epc.encodeProductionCompany(metadata))
 metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata)], axis=1)
 #print(encodedCompanies.keys())
@@ -98,4 +100,3 @@ print('new dataset should be safed, doublcheck in folder')
 
 # execute train-test-split
 splitter.split_dataset()
-
