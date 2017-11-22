@@ -13,9 +13,12 @@ import normalize_column as nc
 import encode_actors as ea
 import train_test_split as splitter
 import encode_directors as ed
+import adjust_measures as adj
 
 # read in raw csv files
 metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
+
+metadata = adj.adjust_measures(metadata)
 
 status = '[Status: ]'
 
