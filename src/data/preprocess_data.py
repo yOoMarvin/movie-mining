@@ -63,26 +63,21 @@ print(status + 'encoded company')
 metadata = nc.normalize_column_data(metadata, 'runtime')
 print(status + 'data normalized')
 
-
-
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned"]]
 productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
 print(status + 'productivity safed in different file...done')
 
-
 #process actor column (returned)
 actors_column_processed = ea.encodeActorsToOne(metadata, filter, threshold_actors)
-actors_column_processed = actors_column_processed.reset_index()
-actors_column_processed = actors_column_processed.set_index(metadata.index)
+
 #print(actors_column_processed.keys())
 print(status + 'encoded actors')
 
 # preprocess directors_column
 directors_column_processed = ed.encodeDirectorsToOne(metadata, filter, threshold_directors)
-directors_column_processed = directors_column_processed.reset_index()
-directors_column_processed = directors_column_processed.set_index(metadata.index)
 print(status + 'encoded directors')
+
 
 # metadata: merge again with metadata
 metadata = pd.concat([metadata, actors_column_processed], axis=1)
@@ -109,5 +104,9 @@ metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 
 print('new dataset should be safed, doublcheck in folder')
 
+
 # execute train-test-split
 splitter.split_dataset()
+
+check = [elem for elem in metadata.columns.values if elem.startswith("id")] + [elem for elem in metadata.columns.values if elem.startswith("index")]
+print("Check for suspicious index columns: {}".format(check))

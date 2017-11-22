@@ -22,6 +22,8 @@ def encodeActorsToOne(df, filter, threshold):
             indices.append(index)
         else:
             actors.append("")
+            indices.append(index)
+    actors = pd.Series(actors,index=indices)
     actors_encoded = pd.get_dummies(actors)
 
     # actors_encoded['id'] = pd.Series(df['id'])
