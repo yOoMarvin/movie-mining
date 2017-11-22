@@ -72,3 +72,4 @@ scratch/
 
 # Jetbrains idea folder
 .idea/
+data/external/thenumbers_measures.csv
