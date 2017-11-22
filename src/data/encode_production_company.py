@@ -56,7 +56,7 @@ def encodeProductionCompany(df, filter=True, threshold=0.08):
 
 
 
-def encodeProductionCompanyToOne(df, filter=False, threshold=0.0005):
+def encodeProductionCompanyToOne(df, filter, threshold):
     """
     OneHotEncode column production_compnaies
     Json loads does not work here
@@ -93,7 +93,6 @@ def filterWithThreshold(df, threshold):
     for column in df:
         if not (df[column].value_counts()[1]/size >= threshold):
             columns.append(column)
-
     df.drop(columns, axis=1, inplace = True)
 
     return df

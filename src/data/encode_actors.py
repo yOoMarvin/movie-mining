@@ -3,7 +3,7 @@ import re
 import encode_production_company as epc
 
 
-def encodeActorsToOne(df, filter=True, threshold=0.05):
+def encodeActorsToOne(df, filter, threshold):
     """
     reads the first actor out of the credits.csv and onehotencodes it
     joins the encoded actors with the movie id again
