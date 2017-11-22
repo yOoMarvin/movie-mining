@@ -95,7 +95,30 @@ def start():
         
 try:
     start()
+    print("")
 except Exception as e:
     print("!!! CRASH !!! WAITING AND RESTARTING !!!",e)
     time.sleep(30)
     start()
+    
+
+"""
+# extend missing
+data = load()
+movies = pd.read_csv(filepath_raw + "movies_metadata.csv", index_col=5)
+# filtered = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
+#data = pd.DataFrame(movies.loc[filtered.index.values]["imdb_id"])
+movies = pd.DataFrame(movies["imdb_id"])
+movies["budget"] = np.nan
+movies["revenue"] = np.nan
+movies["raw"] = np.nan
+movies = movies.drop_duplicates()
+
+print(len(movies))
+movies = movies.drop(data.index.values)
+print(len(movies))
+print(len(data))
+data = pd.concat([movies,data])
+print(len(data))
+data.to_csv(filepath_interim + filename, encoding='utf-8')
+"""
