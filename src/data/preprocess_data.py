@@ -15,6 +15,13 @@ import train_test_split as splitter
 import encode_directors as ed
 import adjust_measures as adj
 
+
+# set values for the thresholding during preprocessing
+filter = True
+threshold_actors = 0.076
+threshold_companies = 0.025
+threshold_directors = 0.05
+
 # read in raw csv files
 metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
 
@@ -48,7 +55,7 @@ metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
 print(status + 'encoded productivity')
 
 #print(epc.encodeProductionCompany(metadata))
-metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata)], axis=1)
+metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata, filter, threshold_companies)], axis=1)
 #print(encodedCompanies.keys())
 print(status + 'encoded company')
 
@@ -56,24 +63,21 @@ print(status + 'encoded company')
 metadata = nc.normalize_column_data(metadata, 'runtime')
 print(status + 'data normalized')
 
-
-
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned"]]
 productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
 print(status + 'productivity safed in different file...done')
 
 #process actor column (returned)
-actors_column_processed = ea.encodeActorsToOne(metadata)
-#actors_column_processed = actors_column_processed.reset_index()
-#actors_column_processed = actors_column_processed.set_index(metadata.index)
+actors_column_processed = ea.encodeActorsToOne(metadata, filter, threshold_actors)
+
 #print(actors_column_processed.keys())
-# print(metadata.head())
+print(status + 'encoded actors')
 
 # preprocess directors_column
-directors_column_processed = ed.encodeDirectorsToOne(metadata)
-#directors_column_processed = directors_column_processed.reset_index()
-#directors_column_processed = directors_column_processed.set_index(metadata.index)
+directors_column_processed = ed.encodeDirectorsToOne(metadata, filter, threshold_directors)
+print(status + 'encoded directors')
+
 
 # metadata: merge again with metadata
 metadata = pd.concat([metadata, actors_column_processed], axis=1)
@@ -88,13 +92,13 @@ metadata = metadata.drop([
         ,'production_countries'
         ,'production_companies'
         ,'quarter'
-        ,'year' #dropped year because it will cause unseen data for future values
+        ,'year' # dropped year because it will cause unseen data for future values
         ,'productivity'
-        ,'cast' #not needed anymore after preprocessing
+        ,'cast' # not needed anymore after preprocessing
         ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
-print(metadata.keys())
+print(metadata.head())
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 

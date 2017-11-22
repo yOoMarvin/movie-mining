@@ -5,7 +5,7 @@ from addPrefixToColumn import addPrefixToColumn
 import extract_companies as ec
 import clean_companies as cc
 
-def encodeProductionCompany(df, filter=False, threshold=0.0005):
+def encodeProductionCompany(df, filter=True, threshold=0.08):
     """
     MultipleHotEncode column production_companies
     Json loads does not work here
@@ -56,7 +56,7 @@ def encodeProductionCompany(df, filter=False, threshold=0.0005):
 
 
 
-def encodeProductionCompanyToOne(df, filter=False, threshold=0.0005):
+def encodeProductionCompanyToOne(df, filter, threshold):
     """
     OneHotEncode column production_compnaies
     Json loads does not work here
@@ -89,6 +89,29 @@ def filterWithThreshold(df, threshold):
     :return: filtered DataFrame
     """
     size = len(df)
+    columns = []
     for column in df:
         if not (df[column].value_counts()[1]/size >= threshold):
-            df.drop(column, axis=1, inplace = True)
+            columns.append(column)
+    df.drop(columns, axis=1, inplace = True)
+
+    return df
+
+def companiesForHistogramm(df):
+    ec.extract_companies(df.index.values)
+    cc.clean_companies()
+
+    m2c = pd.read_csv("../../data/interim/companies_to_movies.csv", index_col=0)
+    clean = pd.read_csv("../../data/interim/companies_cleaned.csv", index_col=0)
+
+    joined = m2c.join(clean, on="company")
+    joined.drop("company", axis=1, inplace=True)
+    joined.drop_duplicates(["movie", "name"], inplace=True)
+
+    piv = pd.pivot_table(joined, index=["movie"], values=["name"], aggfunc=lambda x: '#'.join(x))
+    new_values_encoded = piv["name"]
+
+    new_values_encoded_ready = pd.DataFrame()
+    new_values_encoded_ready['companies'] = pd.Series(new_values_encoded)
+
+    return  new_values_encoded_ready
