@@ -51,7 +51,10 @@ print(status + 'encoded country')
 metadata = pd.concat([metadata, eg.encodeGenre(metadata)], axis=1)
 print(status + 'encoded genre')
 
-metadata = pd.concat([metadata, p.productivity_column(metadata)], axis=1)
+# Call here the specific function for the kind of binning you want
+# productivity_binary_bins --> Yes / No Bins
+# productivity_rating_bins --> 4 bins
+metadata = pd.concat([metadata, p.productivity_binary_bins(metadata)], axis=1)
 print(status + 'encoded productivity')
 
 #print(epc.encodeProductionCompany(metadata))
