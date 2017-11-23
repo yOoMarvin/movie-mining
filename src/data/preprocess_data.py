@@ -62,14 +62,18 @@ metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata, filter, th
 #print(encodedCompanies.keys())
 print(status + 'encoded company')
 
-# metadata: normalize data here if necessary. Input: df and string, Output: completed dataframe with normalized column Example: runtime
-metadata = nc.normalize_column_data(metadata, 'runtime')
-print(status + 'data normalized')
+
 
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned"]]
 productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
 print(status + 'productivity safed in different file...done')
+
+# metadata: normalize data here if necessary. Input: df and string, Output: completed dataframe with normalized column Example: runtime
+metadata = nc.normalize_column_data(metadata, 'runtime')
+metadata = nc.normalize_column_data(metadata, 'quarter')
+metadata = nc.normalize_column_data(metadata, 'year')
+print(status + 'data normalized')
 
 #process actor column (returned)
 actors_column_processed = ea.encodeActorsToOne(metadata, filter, threshold_actors)
@@ -87,21 +91,20 @@ metadata = pd.concat([metadata, actors_column_processed], axis=1)
 metadata = pd.concat([metadata, directors_column_processed], axis=1)
 
 # metadata: drop irrelevant data
+#important: year, budget and quarter are not dropped anymore. Drop in classifier scripts!
 metadata = metadata.drop([
-        'budget'
-        ,'genres'
+        'genres'
         ,'revenue'
         ,'release_date'
         ,'production_countries'
         ,'production_companies'
-        ,'quarter'
-        ,'year' # dropped year because it will cause unseen data for future values
         ,'productivity'
         ,'cast' # not needed anymore after preprocessing
         ,'crew'
 ],1)
+print(metadata['quarter'])
 print(status + 'dropped irrelevant data')
-print(metadata.head())
+#print(metadata.head())
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 
