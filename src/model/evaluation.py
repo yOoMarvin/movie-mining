@@ -31,11 +31,9 @@ target = df['productivity_binned']
 # Drop unwanted columns
 columns_to_drop = [
         "original_title",
-        "productivity_binned",
-        "id"
-]
+        "productivity_binned"
+        ]
 df = df.drop(columns_to_drop, axis=1)
-
 
 
 # KStratifiedFold with random_state = 42
@@ -121,7 +119,7 @@ def micro_roc(estimator, data, target):
     y = target
 
     # Binarize the output
-    y = label_binarize(y, classes=['low', 'middle', 'high']) #Adjust the labels to your need
+    y = label_binarize(y, classes=['no', 'yes']) #Adjust the labels to your need
     n_classes = y.shape[1]
 
     # shuffle and split training and test sets --> Need to to this, no cross val here
@@ -163,7 +161,7 @@ plt.figure(figsize=(5,5))
 plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
 
 # KNN / 3 NN - AVG for Label
-mean_fpr, mean_tpr, mean_auc, std_auc = avg_roc(cv, knn_estimator, df.values, target.values, 'low') #Take care of the label here! Is the binning label
+mean_fpr, mean_tpr, mean_auc, std_auc = avg_roc(cv, knn_estimator, df.values, target.values, 'yes') #Take care of the label here! Is the binning label
 plt.plot(mean_fpr, mean_tpr, label='3-NN (AUC: {:.3f} $\pm$ {:.3f})'.format(mean_auc, std_auc))
 
 plt.xlabel('false positive rate')
