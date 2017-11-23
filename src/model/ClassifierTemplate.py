@@ -29,11 +29,11 @@ from sklearn.model_selection import StratifiedKFold
 
 
 class Classifier:
-    
+
     # data = pd.DataFrame containing the attributes
     # truth = pd.DataFrame containing the class
     # truth_arr = array of truth values
-    
+
     def __init__(self,data,c):
         # set data
         self.data = data
@@ -46,11 +46,11 @@ class Classifier:
         self.truth = pd.DataFrame(truth,columns=[c])
         self.dropColumns([c])
         self.extractTruthArray()
-        
+
     """
         Methods for Preprocessing
     """
-    
+
     # drop all given columns
     def dropColumns(self,columns):
         """
@@ -58,7 +58,7 @@ class Classifier:
             :param columns: array of column names
         """
         self.data = self.data.drop(columns,axis=1)
-    
+
     # drop all rows containing missing values
     def dropMissing(self):
         missing_indices = np.array([],dtype=int)
@@ -66,31 +66,31 @@ class Classifier:
             zero = None
             if type(self.data[c][0]) == "<class 'bytes'>":
                 zero = b'?'
-                
+
             if zero is not None:
                 try:
                     missing_indices = np.append(missing_indices,self.data[self.data[c]==zero].index.values)
                 except TypeError:
                     print("TypeError",c,self.data[c][0],type(self.data[c][0]),isinstance(self.data[c][0],str),zero)
                     pass
-                
+
         missing_indices = np.unique(missing_indices)
         self.data = self.data.drop(missing_indices)
         self.truth = self.truth.drop(missing_indices)
         self.extractTruthArray()
-        
+
     # HotEncode given columns
     def hotEncode(self,columns):
         data_encoded = pd.get_dummies(self.data[columns])
         self.dropColumns(columns)
         self.data = pd.concat([self.data, data_encoded],axis=1)
-    
-    # LabelEncode given columns    
+
+    # LabelEncode given columns
     def labelEncode(self,columns):
         data_encoded = self.data[columns].apply(preprocessing.LabelEncoder().fit_transform)
         self.dropColumns(columns)
         self.data = pd.concat([self.data, data_encoded],axis=1)
-        
+
     # MinMaxScale given columns
     def scale(self,columns):
         scaler = preprocessing.MinMaxScaler()
@@ -101,47 +101,47 @@ class Classifier:
         )
         self.dropColumns(columns)
         self.data = pd.concat([self.data, data_preprocessed],axis=1)
-        
+
     def extractTruthArray(self):
         c, r = self.truth.values.shape
         self.truth_arr = self.truth.values.reshape(c,)
-        
+
     # return # of rows in DataFrame
     def size(self):
         return len(self.data)
-    
+
     # print distribution percentage of labels
     def balanceInfo(self,data = None):
         l = {}
         total = 0
-        
+
         if (data is None):
             scalar = self.truth[self.truth.columns[0]]
         else:
             scalar = np.array(data)
 
         unique = set(scalar)
-        
+
         for c in unique:
             l[c] = len(scalar[scalar==c])
             total += l[c]
-            
+
         for c in l:
             print("class: {}, len = {} -> {}%".format( c,l[c],round(l[c]/total,2)*100 ))
-            
+
     """
         Methods for Classification
     """
-    
+
     def knn(self):
         return KNeighborsClassifier()
-    
+
     def bayes(self):
         return GaussianNB()
-    
+
     def tree(self):
         return tree.DecisionTreeClassifier()
-    
+
     def centroid(self):
         return NearestCentroid()
 
@@ -152,16 +152,16 @@ class Classifier:
         # use first value of truth if not defined
         if (pos_label is None):
             pos_label = self.truth[self.truth.columns[0]].unique()[0]
-            
+
         return make_scorer(
                 f1_score,
                 pos_label=pos_label,
                 average=average
         )
-    
+
     def fold(self,k=10,random_state=42,shuffle=True):
         return StratifiedKFold(n_splits=k, shuffle=shuffle, random_state=random_state)
-    
+
     def splitData(self, size = 0.2, random = 42):
         self.data_train, self.data_test, self.target_train, self.target_test = train_test_split(
             self.data,
@@ -170,14 +170,14 @@ class Classifier:
             random_state=random,
             stratify=self.truth_arr
         )
-        
+
     def fit_predict(self,estimator):
         estimator.fit(self.data_train,self.target_train)
         self.predict = estimator.predict(self.data_test)
-        
+
     def gridSearch(self,estimator,scoring,parameters = [],verbose=0,print_results=True,cv=None):
         print("starting GridSearch. Count of columns = {}".format( len(self.data.columns) ))
-        
+
         grid_search_estimator = GridSearchCV(estimator, parameters, scoring=scoring, verbose=verbose, cv=cv)
         grid_search_estimator.fit(self.data,self.truth_arr)
 
@@ -190,14 +190,14 @@ class Classifier:
                 print("{}, {}".format(results['params'][i], results['mean_test_score'][i]))
 
         return grid_search_estimator
-    
+
     def gridSearchBestScore(self,gs):
         print(
                 "--------------------------- GRID SEARCH BEST SCORE ---------------------------\n",
                 "Best score is {} with params {}.\n".format(gs.best_score_, gs.best_params_ ),
                 "------------------------------------------------------------------------------\n"
         )
-        
+
     def gridSearchResults2CSV(self,gs,parameters,filename):
         with open(filename,'w',newline="\n",encoding="utf-8") as csvfile:
             fieldnames = list(parameters.keys())
@@ -209,20 +209,20 @@ class Classifier:
                 row = results['params'][i]
                 row["result"] = results['mean_test_score'][i]
                 writer.writerow(row)
-        
-    
+
+
     """
         Methods for Evaluation
         (needs evaluation ;))
     """
-    
+
     def confusion_matrix(self):
         labels = list(set(self.target_test))
         return [confusion_matrix(self.target_test,self.predict,labels=labels),labels]
 
     def classification_report(self):
         print(classification_report(self.target_test,self.predict))
-        
+
     def report(self,p):
         measures = {}
         row = 0
