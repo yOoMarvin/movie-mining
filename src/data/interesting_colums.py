@@ -8,10 +8,13 @@ def interesting_columns(metadata):
     metadata.budget = metadata.budget.astype(np.float64)
     # focus on columns needed.
     metadata = metadata.loc[:,
-               ['id', 'original_title', 'adult', 'budget', 'genres', 'revenue', 'release_date', 'belongs_to_collection',
+               ['original_title', 'adult', 'budget', 'genres', 'revenue', 'release_date', 'belongs_to_collection',
                 'production_countries', 'production_companies', 'runtime']]
     # query dataset based on valid revenue and valid budget, save to csv file
-    metadata = metadata.query('revenue > 100000 & budget > 100000 & genres != "[]" & production_companies != "[]"')
+    
+    # threshold for revenue and budget not needed anymore
+    # metadata = metadata.query('revenue > 100000 & budget > 100000 & genres != "[]" & production_companies != "[]"')
+    metadata = metadata.query('genres != "[]" & production_companies != "[]"')
     
     print("deleting duplicates. before: ",len(metadata))
     metadata = metadata.drop_duplicates(keep="first")
