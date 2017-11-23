@@ -26,7 +26,7 @@ from sklearn.svm import LinearSVC
 
 from sklearn.model_selection import StratifiedKFold
 
-
+from sklearn.ensemble import RandomForestClassifier
 
 class Classifier:
 
@@ -132,7 +132,8 @@ class Classifier:
     """
         Methods for Classification
     """
-
+    def randomForrest(self):
+        return RandomForestClassifier(n_estimators=20)
     def knn(self):
         return KNeighborsClassifier()
 
