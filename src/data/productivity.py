@@ -30,7 +30,7 @@ def productivity_rating_bins(df):
     df['productivity'] = df['revenue'] / df['budget']
     # Binning and one hot encoding
     df_binned = pd.DataFrame(dict(
-        productivity_binned = pd.cut(
+        productivity_binned_multi = pd.cut(
                 df['productivity']
                 # bins from 0-1, 0-2, 2-5, 5-open
                 ,bins=[0.0,1.0,2.0,5.0,float("inf")] # If bins is a sequence it defines the bin edges allowing for non-uniform bin width
@@ -55,7 +55,7 @@ def productivity_binary_bins(df):
     df['productivity'] = df['revenue'] / df['budget']
     # Binning and one hot encoding
     df_binned = pd.DataFrame(dict(
-        productivity_binned = pd.cut(
+        productivity_binned_binary = pd.cut(
                 df['productivity']
                 # bins only for productive and unproductive
                 ,bins=[0.0,1.0,float("inf")] # If bins is a sequence it defines the bin edges allowing for non-uniform bin width
