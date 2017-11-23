@@ -11,6 +11,8 @@ metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
 metadata = adj.adjust_measures(metadata)
 
 status = '[Status: ]'
+metadata['adult'].value_counts().plot(kind='bar')
+plt.show()
 
 #limit metadata to relevant columns and rows only
 metadata = ic.interesting_columns(metadata)
@@ -27,9 +29,9 @@ values_company = epc.companiesForHistogramm(metadata)
 #plt.setp(cbar.ax.get_xticklabels()[::2], visible=False)
 
 values_directors = ed.directorsForHistogram(metadata)
-values_directors['directors'].value_counts().plot(kind='bar')
+#values_directors['directors'].value_counts().plot(kind='bar')
 
-plt.suptitle("Histogramm Distribution")
-plt.show()
+#plt.suptitle("Histogramm Distribution")
+#plt.show()
 size = len(metadata)
 print(size)

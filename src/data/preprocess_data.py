@@ -17,7 +17,7 @@ import adjust_measures as adj
 
 
 # set values for the thresholding during preprocessing
-filter = True
+filter = False
 threshold_actors = 0.076
 threshold_companies = 0.025
 threshold_directors = 0.05
@@ -43,7 +43,7 @@ print(status + 'collection is converted to boolean')
 metadata = cr.years_quarters(metadata)
 metadata = eq.quarter_encoding(metadata)
 print(status + 'year converted, quarter encoded')
-
+print(metadata.query('adult != "0.0"'))
 # metadata: encode company. country, genre and attach to dataframe. This is not done by the method itself
 metadata = pd.concat([metadata, ep_country.encodeProductionCountry(metadata)], axis=1)
 print(status + 'encoded country')
@@ -70,8 +70,6 @@ print(status + 'productivity safed in different file...done')
 
 #process actor column (returned)
 actors_column_processed = ea.encodeActorsToOne(metadata, filter, threshold_actors)
-
-#print(actors_column_processed.keys())
 print(status + 'encoded actors')
 
 # preprocess directors_column
