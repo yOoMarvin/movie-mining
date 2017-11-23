@@ -109,7 +109,8 @@ print(status + 'dropped irrelevant data')
 
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
-print(status + 'new dataset should be safed, doublcheck in folder')
+metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
+print(status + 'new dataset should be saved, doublecheck in folder')
 
 
 # execute train-test-split

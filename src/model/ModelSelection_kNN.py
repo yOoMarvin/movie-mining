@@ -8,39 +8,51 @@ Created on Thu Nov 16 13:09:06 2017
 import ClassifierTemplate as ct
 import pandas as pd
 
-data_train = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
-data_test = pd.read_csv("../../data/processed/test_set.csv", index_col=0)
-data = pd.concat([data_train,data_test])
+data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 
 # DataFrame containing label (!)
 df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned")
+c = ct.Classifier(df,"productivity_binned_binary")
 
-# drop columns not needed for Classification
+### drop single columns not needed for Classification
 c.dropColumns([
         "original_title"
-        ,"budget"
-        ,"adult"
+        #,"adult"
+        #,"belongs_to_collection"
+        #,"budget"
+        #,"runtime"
+        ,"year"
+        #,"quarter"
+        ,"productivity_binned_multi"
+        #,"productivity_binned_binary"
 ])
 
-c.dropColumnByPrefix("actor") # without 30%, with 32%
-c.dropColumnByPrefix("director")
-c.dropColumnByPrefix("company")
-c.dropColumnByPrefix("country")
-c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter")
-c.dropColumnByPrefix("Unnamed")
+### scale something if needed
+#c.scale([
+#        "budget"
+#])
 
+### drop columns by prefix if needed
+#c.dropColumnByPrefix("actor")
+#c.dropColumnByPrefix("director")
+#c.dropColumnByPrefix("company")
+#c.dropColumnByPrefix("country")
+#c.dropColumnByPrefix("genre")
+c.dropColumnByPrefix("quarter_")
+
+# lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
-#df = df.iloc[df.nonzero()[0]]
+df = df.iloc[df.nonzero()[0]]
 print(df)
+print(c.data.columns)
 
-
+# get information about the data
+c.balanceInfo()
 
 # get parameters for GridSearch
-scorer = c.f1(average="micro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.knn() # get kNN estimator
 cv = c.fold(
         k=10
@@ -48,7 +60,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,50)
+    "n_neighbors":range(3,10)
     ,"algorithm":[
             "auto"
             #,"ball_tree"

@@ -59,16 +59,12 @@ class Classifier:
             :param columns: array of column names
         """
         self.data = self.data.drop(columns,axis=1)
-<<<<<<< HEAD
     
     # drop all columns with given prefix
     def dropColumnByPrefix(self,prefix):
         #print(self.data.filter(regex=prefix))
         self.data.drop(list(self.data.filter(regex=prefix,axis=1)), axis=1, inplace=True)
-    
-=======
 
->>>>>>> master
     # drop all rows containing missing values
     def dropMissing(self):
         missing_indices = np.array([],dtype=int)
@@ -190,6 +186,7 @@ class Classifier:
 
     def gridSearch(self,estimator,scoring,parameters = [],verbose=0,print_results=True,cv=None):
         print("starting GridSearch. Count of columns = {}".format( len(self.data.columns) ))
+        print("columns: {}" .format( self.data.columns ))
 
         grid_search_estimator = GridSearchCV(estimator, parameters, scoring=scoring, verbose=verbose, cv=cv)
         grid_search_estimator.fit(self.data,self.truth_arr)
