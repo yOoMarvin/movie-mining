@@ -23,6 +23,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn import tree
 from sklearn.neighbors import NearestCentroid
 from sklearn.svm import LinearSVC
+from sklearn.neural_network import MLPClassifier
 
 from sklearn.model_selection import StratifiedKFold
 
@@ -58,6 +59,11 @@ class Classifier:
             :param columns: array of column names
         """
         self.data = self.data.drop(columns,axis=1)
+    
+    # drop all columns with given prefix
+    def dropColumnByPrefix(self,prefix):
+        #print(self.data.filter(regex=prefix))
+        self.data.drop(list(self.data.filter(regex=prefix,axis=1)), axis=1, inplace=True)
     
     # drop all rows containing missing values
     def dropMissing(self):
@@ -147,6 +153,9 @@ class Classifier:
 
     def svc(self):
         return LinearSVC()
+    
+    def neuralnet(self):
+        return MLPClassifier()
 
     def f1(self,pos_label = 1,average = 'binary'):
         # use first value of truth if not defined
