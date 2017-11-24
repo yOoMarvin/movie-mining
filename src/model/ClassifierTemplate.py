@@ -17,6 +17,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import make_scorer
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
+from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -133,6 +134,9 @@ class Classifier:
         Methods for Classification
     """
 
+    def randomForest(self):
+        return RandomForestClassifier(n_estimator=20)#n_estimators: nr of trees
+    
     def knn(self):
         return KNeighborsClassifier()
 
