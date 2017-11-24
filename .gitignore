@@ -83,3 +83,6 @@ scratch/
 
 # Jetbrains idea folder
 .idea/
+data/interim/only_useful_datasets.csv
+data/processed/productivity.csv
+data/processed/train_set.csv
