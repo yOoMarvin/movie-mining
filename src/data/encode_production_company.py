@@ -5,7 +5,7 @@ from addPrefixToColumn import addPrefixToColumn
 import extract_companies as ec
 import clean_companies as cc
 
-def encodeProductionCompany(df, filter=True, threshold=0.08):
+def encodeProductionCompany(df, filter, threshold):
     """
     MultipleHotEncode column production_companies
     Json loads does not work here
