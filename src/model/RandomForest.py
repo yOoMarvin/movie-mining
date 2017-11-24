@@ -39,8 +39,7 @@ def RandomForest(df):
     return
 
 #import data set
-#df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
-df = pd.read_csv("inputfiftyfifty.csv", index_col=0)
+df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 
 df = df.drop(["original_title",
                   "adult",
