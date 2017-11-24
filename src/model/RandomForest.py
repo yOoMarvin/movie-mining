@@ -32,7 +32,7 @@ def RandomForest(df):
                                cv=cv)
     classifier.gridSearchBestScore(gs)
     print("GridSearch for RandomForest took {}".format(time()-start))
-    classifier.gridSearchResults2CSV(gs, param_grid, "randForest.csv")
+    classifier.gridSearchResults2CSV(gs, param_grid, "../../data/processed/randForest.csv")
     
     return
 
