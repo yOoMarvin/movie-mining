@@ -134,7 +134,7 @@ if(setSplitBinary):
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 print(status + 'new dataset should be safed, doublcheck in folder')
-print(metadata)
+
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
