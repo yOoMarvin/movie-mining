@@ -141,7 +141,7 @@ class Classifier:
     """
 
     def randomForest(self):
-        return RandomForestClassifier(n_estimator=20)#n_estimators: nr of trees
+        return RandomForestClassifier()#n_estimators: nr of trees
     
     def knn(self):
         return KNeighborsClassifier()
