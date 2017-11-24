@@ -138,7 +138,7 @@ print(status + 'new dataset should be safed, doublcheck in folder')
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
-#splitter.split_dataset('productivity_binned_binary')
+splitter.split_dataset('productivity_binned_binary')
 #print(metadata.columns.values)
 
 check = [elem for elem in metadata.columns.values if elem.startswith("id")] + [elem for elem in metadata.columns.values if elem.startswith("index")]
