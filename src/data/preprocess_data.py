@@ -16,6 +16,8 @@ import encode_directors as ed
 import adjust_measures as adj
 from time import time
 
+#split binary values 50/50
+setSplitBinary = True
 
 # set values for the thresholding during preprocessing
 filter = True
@@ -36,6 +38,7 @@ print(status + 'limited to interesting columns')
 # read in actors and merge
 actors = pd.read_csv("../../data/raw/credits.csv", index_col=2)
 metadata = pd.merge(metadata, actors, left_index=True, right_index=True)
+
 
 # metadata: convert collection to boolean
 metadata = cc.collection_to_boolean(metadata)
@@ -95,17 +98,38 @@ print(status + 'merged actors and directors into dataset')
 # metadata: drop irrelevant data
 # @date:2017-11-23
 # important: year, budget and quarter are not dropped anymore. Drop in classifier scripts if necessary!
+
 metadata = metadata.drop([
         'genres'
         ,'revenue'
         ,'release_date'
         ,'production_countries'
-        ,'production_companies'
+        #,'production_companies'
         ,'productivity'
         ,'cast' # not needed anymore after preprocessing
         ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
+
+#split values into 50/50 relation
+if(setSplitBinary):
+        high = metadata['productivity_binned_binary'].value_counts().yes
+        low = metadata['productivity_binned_binary'].value_counts().no
+        reduceBy = high - low
+        value = 0
+        rows_to_drop = []
+        for index, row in metadata.iterrows():
+                new_value = row['productivity_binned_binary']
+                if new_value == 'yes' and value < reduceBy:
+                        rows_to_drop.append(index)
+                        value = value +1
+        #metadata.drop(metadata.index[rows_to_drop], inplace=True)
+        metadata = metadata.drop(rows_to_drop)
+        high = metadata['productivity_binned_binary'].value_counts().yes
+        low = metadata['productivity_binned_binary'].value_counts().no
+        if high == low:
+                print(status + 'sucessfully created dataset with 50% yes and 50% no')
+        #print(metadata)
 
 #safe dataset to file, important: encode as UTF-8
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
