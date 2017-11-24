@@ -92,9 +92,11 @@ def RandomForestTwo(df):
     return
 
 def RandomForestThree(df):
-    classifier = ct.Classifier(df, 'productivity_binned')
+    classifier = ct.Classifier(df, 'productivity_binned_binary')
     print(list(df))
-    #dropcolumns(df, "original_title")
+    df = df.drop(["original_title",
+                  "adult",
+                  "productivity_binned_multi"],1)
     score = classifier.f1(average='micro')
     estimator = classifier.randomForest()
     cv = classifier.fold(k=10, random_state=42)
@@ -119,9 +121,8 @@ def RandomForestThree(df):
     return
 
 #import train set
-df = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
-df = dropcolumns(df, 'original_title')
-
+df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
+#df = dropcolumns(df, 'original_title')
 RandomForestThree(df)
 
 """
