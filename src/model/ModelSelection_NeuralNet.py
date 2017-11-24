@@ -53,42 +53,40 @@ c.balanceInfo()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with micro averaging
-estimator = c.knn() # get kNN estimator
+estimator = c.neuralnet() # get estimator
 cv = c.fold(
         k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
+
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,10)
-    ,"algorithm":[
-            "auto"
-            #,"ball_tree"
-            #,"kd_tree"
-            #,"brute"
+    "solver":[
+            #"lbfgs" # an optimizer in the family of quasi-Newton methods.
+            "sgd" # refers to stochastic gradient descent.
+            #,"adam" # refers to a stochastic gradient-based optimizer proposed by Kingma, Diederik, and Jimmy Ba
+     ]
+    ,"hidden_layer_sizes":[ # tuple, length = n_layers - 2, default (100,). The ith element represents the number of neurons in the ith hidden layer.
+            (100,)
+            #,(50,)
     ]
-    ,"weights":[
-            #"uniform"
-            "distance"
+    ,"activation":[
+            #"identity" # no-op activation, useful to implement linear bottleneck, returns f(x) = x
+            "logistic" # the logistic sigmoid function, returns f(x) = 1 / (1 + exp(-x))
+            #,"tanh" # the hyperbolic tan function, returns f(x) = tanh(x)
+            #,"relu" # the rectified linear unit function, returns f(x) = max(0, x)
     ]
-    ,"p":[
-            #1
-            2
-            #,3
+    ,"alpha":[ # L2 penalty (regularization term) parameter. float, optional, default 0.0001
+            0.0001
     ]
-    ,"metric":[
-            "euclidean"
-            #,"manhattan"
-            #,"chebyshev"
-            #,"minkowski"
-            #,"wminkowski" # throws error: additional metric parameters might be missing
-            #,"seuclidean" # throws error: additional metric parameters might be missing
-            #,"mahalanobis" # throws error: additional metric parameters might be missing
+    ,"max_iter":[ # int, optional, default 200. Maximum number of iterations. The solver iterates until convergence (determined by ‘tol’) or this number of iterations. For stochastic solvers (‘sgd’, ‘adam’), note that this determines the number of epochs (how many times each data point will be used), not the number of gradient steps.
+            200
+            #,1000
     ]
+    ,"random_state":[42]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
-
 
 # compute GridSearch
 gs = c.gridSearch(
@@ -103,7 +101,10 @@ gs = c.gridSearch(
 # print best result
 c.gridSearchBestScore(gs)
 
-# Best score is 0.3237997957099081 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 9, 'p': 2, 'weights': 'distance'}.
+## some best results for multilabel
+# Best score is 0.35137895812053116 with params {'solver': 'sgd'}.
+# Best score is 0.394535240040858 with params {'solver': 'sgd'}. - with all columns
+# Best score is 0.39096016343207357 with params {'solver': 'sgd'}. - all columns + budget
 
 # save all results in csv
-c.gridSearchResults2CSV(gs,parameters,"results_kNN.csv")
+c.gridSearchResults2CSV(gs,parameters,"results_NeuralNet.csv")
