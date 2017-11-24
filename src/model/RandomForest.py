@@ -6,13 +6,11 @@ Created on Thu Nov 23 10:51:44 2017
 """
 
 import pandas as pd
-#import numpy as np
 import ClassifierTemplate as ct
 from time import time
 
 def RandomForest(df):
     classifier = ct.Classifier(df, 'productivity_binned_binary')
-    #print(list(df))
     
     score = classifier.f1(average='micro')
     estimator = classifier.randomForest()
@@ -45,5 +43,4 @@ df = df.drop(["original_title",
                   "adult",
                   "productivity_binned_multi",
                   "production_companies"],1)
-#df = dropcolumns(df, 'original_title')
 RandomForest(df)
