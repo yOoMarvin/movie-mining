@@ -6,7 +6,7 @@ Created on Thu Nov 20
 import ClassifierTemplate as ct
 import pandas as pd
 
-data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
+data = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 
 # DataFrame containing label (!)
 df = pd.DataFrame(data)
@@ -57,13 +57,12 @@ c.balanceInfo()
 scorer = c.f1(average="micro") # use F1 score with micro averaging
 estimator = c.bayes() # get GaussianNB estimator
 
-cv = c.fold(
+cross_val = c.fold(
         k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
 
 
-# parameters to iterate in GridSearch
 parameters = {
     # No parameters for bayes
 
@@ -79,7 +78,7 @@ gs = c.gridSearch(
         ,parameters
         ,print_results=False # let verbose print the results
         ,verbose=2
-        ,cv=cv
+        ,cv=cross_val
 )
 
 # print best result

@@ -104,7 +104,7 @@ metadata = metadata.drop([
         ,'revenue'
         ,'release_date'
         ,'production_countries'
-        #,'production_companies'
+        ,'production_companies'
         ,'productivity'
         ,'cast' # not needed anymore after preprocessing
         ,'crew'
