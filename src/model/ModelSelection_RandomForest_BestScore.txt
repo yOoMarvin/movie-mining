@@ -1,0 +1,1 @@
+Best Score: 0.8248175182481752 | {'bootstrap': False, 'criterion': 'entropy',' max_depth': None, 'max_features': 20, 'min_samples_leaf': 3, 'min_samples_split': 10, 'n_estimators': 20}
