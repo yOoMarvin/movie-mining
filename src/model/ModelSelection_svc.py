@@ -14,10 +14,10 @@ c = ct.Classifier(df,"productivity_binned_binary")
 # drop columns not needed for Classification
 c.dropColumns([
          "original_title"
-        ,"adult"
-        ,"belongs_to_collection"
-        ,"budget"
-        ,"runtime"
+        #,"adult"
+        #,"belongs_to_collection"
+        #,"budget"
+        #,"runtime"
         ,"year"
         #,"quarter"
         ,"productivity_binned_multi"

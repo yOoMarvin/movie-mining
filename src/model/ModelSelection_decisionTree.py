@@ -3,13 +3,14 @@
 import ClassifierTemplate as ct
 import pandas as pd
 
+
 data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 
 # DataFrame containing label (!)
 df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary")
+c = ct.Classifier(df,"productivity_binned_binary", True)
 
 # drop columns not needed for Classification
 c.dropColumns([
@@ -37,9 +38,10 @@ c.dropColumns([
 #c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
+
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
-df = df.iloc[df.nonzero()[0]]
+#df = df.iloc[df.nonzero()[0]]
 print(df)
 print(c.data.columns)
 
@@ -56,7 +58,7 @@ parameters = {
     'criterion':['gini', 'entropy'],
     'max_depth':[1, 2, 3, 4, 5, 10, 50, 100, None],
     'min_samples_split' :[2,3,4,5],
-    'class_weight': [{'yes':1, 'no':5}]
+    'class_weight': [{'yes':1, 'no':1}]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
