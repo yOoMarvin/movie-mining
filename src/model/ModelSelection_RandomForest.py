@@ -12,8 +12,8 @@ import datetime
 from sklearn.ensemble import RandomForestClassifier
 import pickle
 
-def RandomForest(df, f1_score_avg_method):
-    classifier = ct.Classifier(df, 'productivity_binned_binary')
+def RandomForest(df, f1_score_avg_method, upsampling):
+    classifier = ct.Classifier(df, 'productivity_binned_binary', upsample=upsampling)
     # get parameters for GridSearch
     # F1 Score with micro averaging
     score = classifier.f1(average=f1_score_avg_method) # macro = für jede klasse Durchschnitt der Berechnung der Scores
@@ -52,7 +52,7 @@ def RandomForest(df, f1_score_avg_method):
     #Print best result of GridSearch
     classifier.gridSearchBestScore(gs)
     #save the best result
-    save_model(gs.best_params_, gs.best_score_, f1_score_avg_method)
+    save_model(gs.best_params_, gs.best_score_, f1_score_avg_method, upsampling)
     
     print(status+"GridSearch for RandomForest took {} seconds".format("%.2f" % (float(time()-start))))
     #store to csv
@@ -60,7 +60,7 @@ def RandomForest(df, f1_score_avg_method):
     print(status + 'CSV with scores saved successfully')
     return
 
-def save_model(gs_params, gs_score, f1_score_avg_method):
+def save_model(gs_params, gs_score, f1_score_avg_method, upsampling):
     filename = "ModelSelection_RandomForest_BestScore"
     #pickle.dump(modelRF, open(filename, "wb"))
     name = filename+".txt"
@@ -69,7 +69,7 @@ def save_model(gs_params, gs_score, f1_score_avg_method):
         with open(name, 'a') as file:
             #file.write("Best Score: "+str(modelRF))
             gs_score = "%.4f" % float(gs_score)
-            file.write(str(datetime.datetime.now())+" | Score: "+str(gs_score)+" | F1 Average: "+f1_score_avg_method+" | "+str(gs_params)+"\n")   
+            file.write(str(datetime.datetime.now())+" | Score: "+str(gs_score)+" | Upsampling: "+str(upsampling)+" | F1 Average: "+f1_score_avg_method+" | "+str(gs_params)+"\n")   
             print(status + 'Best Score and Params saved to .txt file successfully')
     except ValueError:
         print("Oops!  File does not exist. Failed to write to csv")
@@ -91,7 +91,8 @@ df = df.drop(["original_title",
             1)
 
 f1_score_avg_method='macro'
-RandomForest(df, f1_score_avg_method)
+upsampling=True
+RandomForest(df, f1_score_avg_method,upsampling)
 
 """
 #Best score up to now:
