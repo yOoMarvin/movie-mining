@@ -27,6 +27,7 @@ from sklearn.svm import LinearSVC
 from sklearn.neural_network import MLPClassifier
 
 from sklearn.model_selection import StratifiedKFold
+from sklearn.utils import resample
 
 
 
@@ -36,9 +37,11 @@ class Classifier:
     # truth = pd.DataFrame containing the class
     # truth_arr = array of truth values
 
-    def __init__(self,data,c):
+    def __init__(self,data,c,upsample=False):
         # set data
         self.data = data
+        if upsample:
+            self.upsample(c)
         # set truth array
         try:
             truth = np.array([x.decode('ascii') for x in self.data[c].values]) # "inline" for loop with []
@@ -85,6 +88,22 @@ class Classifier:
         self.data = self.data.drop(missing_indices)
         self.truth = self.truth.drop(missing_indices)
         self.extractTruthArray()
+
+    #Upsample the minority class
+    def upsample(self, c):
+        # Separate majority and minority classes
+        df_majority = self.data[self.data[c] == "yes"]
+        df_minority = self.data[self.data[c] == "no"]
+
+        # Upsample minority class
+        df_minority_upsampled = resample(df_minority,
+                                         replace=True,  # sample with replacement
+                                         n_samples=len(df_majority),  # to match majority class
+                                         random_state=42)  # reproducible results
+
+        # Combine majority class with upsampled minority class
+        self.data = pd.concat([df_majority, df_minority_upsampled])
+
 
     # HotEncode given columns
     def hotEncode(self,columns):
