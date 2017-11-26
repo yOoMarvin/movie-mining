@@ -86,3 +86,8 @@ c.gridSearchBestScore(gs)
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"naivebayes_results.csv")
+
+# variables for export
+estimator = gs.best_estimator_
+data = c.data
+target = c.truth_arr
