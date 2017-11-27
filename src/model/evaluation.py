@@ -18,22 +18,13 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
 
+# Custom imports of classifications
+from ModelSelection_NaiveBayes import estimator as nbe
+from ModelSelection_NaiveBayes import data as nbd
+from ModelSelection_NaiveBayes import target as nbt
 
 
 
-# Import data
-df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
-print('data imported')
-
-# Target
-target = df['productivity_binned']
-
-# Drop unwanted columns
-columns_to_drop = [
-        "original_title",
-        "productivity_binned"
-        ]
-df = df.drop(columns_to_drop, axis=1)
 
 
 # KStratifiedFold with random_state = 42
@@ -41,23 +32,29 @@ cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 
 
 
-##### KNN #####
 
-print('#########   KNN EVALUATION   #########')
 
-knn_estimator = KNeighborsClassifier(n_neighbors=3,
-                            algorithm="auto",
-                            weights="uniform",
-                            p=2,
-                            metric="manhattan")
 
-# Fitting the model
-knn_estimator.fit(df, target)
-print('done doing the fit')
+##### NAIVE BAYES #####
+print('#########   NAIVE BAYES EVALUATION   #########')
+naivebayes_data = nbd
+naivebayes_target = nbt
+naivebayes_estimator = nbe
 
-# Predict with cross validation
-knn_scores = cross_val_score(knn_estimator, df, target, cv=cv, scoring='f1_micro')
-print("KNN F1 Score: %0.2f (+/- %0.2f)" % (knn_scores.mean(), knn_scores.std() * 2))
+naivebayes_estimator.fit(naivebayes_data, naivebayes_target)
+
+naivebayes_scores = cross_val_score(naivebayes_estimator,
+                                    naivebayes_data,
+                                    naivebayes_target,
+                                    cv=cv,
+                                    scoring='f1_micro')
+
+print("Naive Bayes F1 Score: %0.2f (+/- %0.2f)" % (naivebayes_scores.mean(), naivebayes_scores.std() * 2))
+
+
+
+
+
 
 
 
@@ -160,9 +157,9 @@ import matplotlib.pyplot as plt
 plt.figure(figsize=(5,5))
 plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
 
-# KNN / 3 NN - AVG for Label
-mean_fpr, mean_tpr, mean_auc, std_auc = avg_roc(cv, knn_estimator, df.values, target.values, 'yes') #Take care of the label here! Is the binning label
-plt.plot(mean_fpr, mean_tpr, label='3-NN (AUC: {:.3f} $\pm$ {:.3f})'.format(mean_auc, std_auc))
+# Naive Bayes - AVG for Label
+mean_fpr, mean_tpr, mean_auc, std_auc = avg_roc(cv, naivebayes_estimator, naivebayes_data.values, naivebayes_target, 'yes') #Take care of the label here! Is the binning label
+plt.plot(mean_fpr, mean_tpr, label='Naive Bayes (AUC: {:.3f} $\pm$ {:.3f})'.format(mean_auc, std_auc))
 
 plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
@@ -176,9 +173,9 @@ plt.show()
 plt.figure(figsize=(5,5))
 plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
 
-# KNN / 3 NN - Micro Roc
-fpr, tpr, roc_auc = micro_roc(knn_estimator, df, target)
-plt.plot(fpr[2], tpr[2],lw=2, label='3-NN ROC curve (area = %0.2f)' % roc_auc[2])
+# Naive Bayes - Micro Roc
+fpr, tpr, roc_auc = micro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
+plt.plot(fpr[2], tpr[2],lw=2, label='Naive Bayes ROC curve (area = %0.2f)' % roc_auc[2])
 
 plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
