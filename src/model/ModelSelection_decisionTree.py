@@ -36,7 +36,7 @@ c.dropColumns([
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
+#c.dropColumnByPrefix("quarter_")
 
 
 # lets print all non-zero columns of a movie to doublecheck

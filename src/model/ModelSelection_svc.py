@@ -53,7 +53,7 @@ cv = c.fold(
 # parameters to iterate in GridSearch
 parameters = {
     'multi_class':['ovr'],
-    'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}]
+    'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}, None]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
