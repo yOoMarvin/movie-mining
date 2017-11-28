@@ -40,9 +40,12 @@ c.dropColumns([
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
 df = df.iloc[df.nonzero()[0]]
-#print(df)
-#print(c.data.columns)
+print(df)
+print(c.data.columns)
 
+c.splitData()
+#c.upsampleTrainData()
+c.downsampleTrainData()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with micro averaging
@@ -69,6 +72,7 @@ gs = c.gridSearch(
         ,print_results=False # let verbose print the results
         ,verbose=2
         ,cv=cv
+        ,onTrainSet=True
 )
 
 # print best result
@@ -77,8 +81,7 @@ c.gridSearchBestScore(gs)
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"svc_results.csv")
 
-c.splitData()
-c.upsampleTrainData()
+
 
 c.fit_predict(gs.best_estimator_)
 print(c.confusion_matrix())

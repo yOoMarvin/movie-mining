@@ -52,12 +52,16 @@ print(c.data.columns)
 c.balanceInfo()
 
 # get parameters for GridSearch
-scorer = c.f1(average="macro") # use F1 score with micro averaging
+scorer = c.f1(average="micro") # use F1 score with micro averaging
 estimator = c.neuralnet() # get estimator
 cv = c.fold(
         k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
+
+c.splitData()
+c.upsampleTrainData()
+#c.downsampleTrainData()
 
 # parameters to iterate in GridSearch
 parameters = {
@@ -96,6 +100,7 @@ gs = c.gridSearch(
         ,print_results=False # let verbose print the results
         ,verbose=2
         ,cv=cv
+        ,onTrainSet=True
 )
 
 # print best result
@@ -108,3 +113,8 @@ c.gridSearchBestScore(gs)
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"results_NeuralNet.csv")
+
+c.fit_predict(gs.best_estimator_)
+print(c.confusion_matrix())
+
+c.classification_report()

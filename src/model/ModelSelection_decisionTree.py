@@ -45,9 +45,12 @@ df = c.data.loc[19898]
 print(df)
 print(c.data.columns)
 
+c.splitData()
+#c.upsampleTrainData()
+c.downsampleTrainData()
 
 # get parameters for GridSearch
-scorer = c.f1(average="macro") # use F1 score with macro averaging
+scorer = c.f1(average="micro") # use F1 score with macro averaging
 estimator = c.tree() # get decisionTree estimator
 cv = c.fold(
         k=10
@@ -72,6 +75,7 @@ gs = c.gridSearch(
         ,print_results=False # let verbose print the results
         ,verbose=2
         ,cv=cv
+        ,onTrainSet=True
 )
 
 # print best result
@@ -79,9 +83,6 @@ c.gridSearchBestScore(gs)
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"tree_results.csv")
-
-c.splitData()
-c.upsampleTrainData()
 
 c.fit_predict(gs.best_estimator_)
 print(c.confusion_matrix())
