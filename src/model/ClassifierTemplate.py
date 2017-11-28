@@ -17,6 +17,9 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import make_scorer
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
+from sklearn.metrics import average_precision_score
+from sklearn.metrics import precision_recall_fscore_support
+
 from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.neighbors import KNeighborsClassifier
@@ -48,7 +51,7 @@ class Classifier:
         except AttributeError:
             truth = np.array(self.data[c].values)
             pass
-        self.truth = pd.DataFrame(truth,columns=[c])
+        self.truth = pd.DataFrame(truth,columns=[c],index=data.index)
         self.dropColumns([c])
         self.extractTruthArray()
 
@@ -193,6 +196,32 @@ class Classifier:
 
     def fold(self,k=10,random_state=42,shuffle=True):
         return StratifiedKFold(n_splits=k, shuffle=shuffle, random_state=random_state)
+    
+    def cross_validate(self,cv,estimator):
+        scores = []
+        counts = {}
+        for train_indices, test_indices in cv.split(self.data, self.truth_arr):
+            train_data, train_target = self.data.iloc[train_indices], self.truth_arr[train_indices]
+            estimator.fit(train_data, train_target)
+            
+            test_data, test_target = self.data.iloc[test_indices], self.truth_arr[test_indices]
+            prediction = estimator.predict(test_data)
+            
+            scores.append(f1_score(test_target, prediction, average='macro'))
+            
+            #tn, fp, fn, tp = confusion_matrix(test_target, prediction, labels=["yes","no"]).ravel()
+            #print(tn,fp,fn,tp)
+            
+            labels, count = np.unique(prediction,return_counts=True)
+            for i, l in enumerate(labels):
+                if l not in counts:
+                    counts[l] = 0
+                counts[l] += count[i]
+ 
+        r = {"f1":sum(scores)/len(scores)}
+        r.update(counts)
+        return r
+        
 
     def splitData(self, size = 0.2, random = 42):
         self.data_train, self.data_test, self.target_train, self.target_test = train_test_split(

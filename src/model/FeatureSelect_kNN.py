@@ -13,8 +13,10 @@ data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 # DataFrame containing label (!)
 df = pd.DataFrame(data)
 
+label_column = "productivity_binned_binary"
+
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary")
+c = ct.Classifier(df,label_column)
 
 ### drop single columns not needed for Classification
 c.dropColumns([
@@ -23,7 +25,7 @@ c.dropColumns([
         #,"belongs_to_collection"
         #,"budget"
         #,"runtime"
-        ,"year"
+        #,"year"
         #,"quarter"
         ,"productivity_binned_multi"
         #,"productivity_binned_binary"
@@ -40,7 +42,7 @@ c.dropColumns([
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
-#c.dropColumnByPrefix("quarter_")
+c.dropColumnByPrefix("quarter_")
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -60,7 +62,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,10)
+    "n_neighbors":range(6,7)
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -89,24 +91,33 @@ parameters = {
     #,"n_jobs":[1]
 }
 
-print(c.cross_validate(cv,estimator))
+features = {
+        "single":[
+            "adult",
+            "belongs_to_collection",
+            "budget",
+            "runtime",
+            "year",
+            "quarter"
+        ],
+        "multi":[
+            "actor",
+            "director",
+            "company",
+            "country",
+            "genre",
+            "quarter_"
+        ]
+}
 
-"""
 # compute GridSearch
-gs = c.gridSearch(
-        estimator
-        ,scorer
+gs = c._featureselect_iterate(
+        features
         ,parameters
-        ,print_results=False # let verbose print the results
-        ,verbose=2
-        ,cv=cv
+        ,scorer
+        ,estimator
+        ,cv
+        ,label_column
 )
 
-# print best result
-c.gridSearchBestScore(gs)
-
-# Best score is 0.3237997957099081 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 9, 'p': 2, 'weights': 'distance'}.
-
-# save all results in csv
-c.gridSearchResults2CSV(gs,parameters,"results_kNN.csv")
-"""
+print(gs)
