@@ -17,7 +17,7 @@ import adjust_measures as adj
 from time import time
 
 #split binary values 50/50
-setSplitBinary = True
+setSplitBinary = False
 
 # set values for the thresholding during preprocessing
 filter = True

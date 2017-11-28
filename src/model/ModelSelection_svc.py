@@ -43,8 +43,12 @@ df = df.iloc[df.nonzero()[0]]
 print(df)
 print(c.data.columns)
 
+c.splitData()
+#c.upsampleTrainData()
+c.downsampleTrainData()
+
 # get parameters for GridSearch
-scorer = c.f1(average="micro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.svc() # get svc estimator
 cv = c.fold(
         k=10
@@ -53,7 +57,8 @@ cv = c.fold(
 # parameters to iterate in GridSearch
 parameters = {
     'multi_class':['ovr'],
-    'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}]
+    'class_weight':[None, 'balanced']
+    #'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}, None]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
@@ -67,6 +72,7 @@ gs = c.gridSearch(
         ,print_results=False # let verbose print the results
         ,verbose=2
         ,cv=cv
+        ,onTrainSet=True
 )
 
 # print best result
@@ -75,9 +81,10 @@ c.gridSearchBestScore(gs)
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"svc_results.csv")
 
-c.splitData()
+
 
 c.fit_predict(gs.best_estimator_)
 print(c.confusion_matrix())
 
 c.classification_report()
+
