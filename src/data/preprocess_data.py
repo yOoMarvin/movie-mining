@@ -98,13 +98,12 @@ print(status + 'merged actors and directors into dataset')
 # metadata: drop irrelevant data
 # @date:2017-11-23
 # important: year, budget and quarter are not dropped anymore. Drop in classifier scripts if necessary!
-
 metadata = metadata.drop([
         'genres'
         ,'revenue'
         ,'release_date'
         ,'production_countries'
-        #,'production_companies'
+        ,'production_companies'
         ,'productivity'
         ,'cast' # not needed anymore after preprocessing
         ,'crew'
@@ -135,11 +134,11 @@ if(setSplitBinary):
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
-
+print(metadata)
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
-splitter.split_dataset('productivity_binned_binary')
+#splitter.split_dataset('productivity_binned_binary')
 #print(metadata.columns.values)
 
 check = [elem for elem in metadata.columns.values if elem.startswith("id")] + [elem for elem in metadata.columns.values if elem.startswith("index")]
