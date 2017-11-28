@@ -74,8 +74,9 @@ def encodeProductionCompanyToOne(df, filter, threshold):
         new_value = new_value.split(", ")[0]
         new_values.append(new_value)
     new_values_encoded = pd.get_dummies(new_values)
-    if(filter):
-        new_values_encoded = filterWithThreshold(new_values_encoded, threshold)
+    #if(filter):
+        #new_values_encoded = filterWithThreshold(new_values_encoded, threshold)
+
     new_values_encoded = addPrefixToColumn(new_values_encoded, "company")
     return new_values_encoded
 

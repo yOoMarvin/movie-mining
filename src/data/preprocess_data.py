@@ -15,12 +15,13 @@ import train_test_split as splitter
 import encode_directors as ed
 import adjust_measures as adj
 from time import time
+import threshold_columns as tc
 
 #split binary values 50/50
 setSplitBinary = False
 
 # set values for the thresholding during preprocessing
-filter = True
+filter = False
 threshold_actors = 0.076
 threshold_companies = 0.025
 threshold_directors = 0.05
@@ -134,8 +135,10 @@ if(setSplitBinary):
 metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
-print(metadata)
 
+#print(list([col for col in metadata if col.startswith('actor')]))
+metadata = tc.thresoldByColumn(metadata, threshold_actors, 'actor')
+print(metadata)
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
 #splitter.split_dataset('productivity_binned_binary')
