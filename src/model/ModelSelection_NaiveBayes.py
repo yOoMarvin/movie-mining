@@ -54,7 +54,7 @@ c.balanceInfo()
 
 
 # get parameters for GridSearch
-scorer = c.f1(average="micro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.bayes() # get GaussianNB estimator
 
 cross_val = c.fold(
