@@ -12,7 +12,7 @@ data = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary")
+c = ct.Classifier(df,"productivity_binned_binary", upsample=True)
 
 ### drop single columns not needed for Classification
 c.dropColumns([
@@ -41,10 +41,10 @@ c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
 # lets print all non-zero columns of a movie to doublecheck
-df = c.data.loc[19898]
-df = df.iloc[df.nonzero()[0]]
-print(df)
-print(c.data.columns)
+#df = c.data.loc[19898]
+#df = df.iloc[df.nonzero()[0]]
+#print(df)
+#print(c.data.columns)
 
 
 
