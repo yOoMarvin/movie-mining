@@ -1,3 +1,3 @@
-multi_class,result
-ovr,0.52121559633
-crammer_singer,0.518635321101
+multi_class,class_weight,result
+ovr,,0.464889344719
+ovr,balanced,0.464889344719
