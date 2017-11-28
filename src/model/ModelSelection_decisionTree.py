@@ -10,7 +10,7 @@ data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary", True)
+c = ct.Classifier(df,"productivity_binned_binary", False)
 
 # drop columns not needed for Classification
 c.dropColumns([
@@ -47,7 +47,7 @@ print(c.data.columns)
 
 
 # get parameters for GridSearch
-scorer = c.f1(average="micro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with macro averaging
 estimator = c.tree() # get decisionTree estimator
 cv = c.fold(
         k=10
@@ -58,7 +58,7 @@ parameters = {
     'criterion':['gini', 'entropy'],
     'max_depth':[1, 2, 3, 4, 5, 10, 50, 100, None],
     'min_samples_split' :[2,3,4,5],
-    'class_weight': [{'yes':1, 'no':1}]
+    'class_weight': [{'yes':1, 'no':1}, None]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
@@ -81,6 +81,7 @@ c.gridSearchBestScore(gs)
 c.gridSearchResults2CSV(gs,parameters,"tree_results.csv")
 
 c.splitData()
+c.upsampleTrainData()
 
 c.fit_predict(gs.best_estimator_)
 print(c.confusion_matrix())

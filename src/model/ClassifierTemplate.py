@@ -104,6 +104,28 @@ class Classifier:
         # Combine majority class with upsampled minority class
         self.data = pd.concat([df_majority, df_minority_upsampled])
 
+    def upsampleTrainData(self):
+        #wholeTrainData = pd.concat([self.data_train, pd.DataFrame(self.target_train)], axis=1)
+        wholeTrainData = pd.merge(self.data_train, pd.DataFrame(self.target_train), left_index=True, right_index=True)
+        #print(wholeTrainData.head())
+        #print(self.data_train.head())
+        #print(wholeTrainData[0].head())
+        df_majority = wholeTrainData[wholeTrainData[0] == "yes"]
+        df_minority = wholeTrainData[wholeTrainData[0] == "no"]
+        #print(df_majority)
+
+        # Upsample minority class
+        df_minority_upsampled = resample(df_minority,
+                                         replace=True,  # sample with replacement
+                                         n_samples=len(df_majority),  # to match majority class
+                                         random_state=42)  # reproducible results
+
+        # Combine majority class with upsampled minority class
+        wholeTrainData = pd.concat([df_majority, df_minority_upsampled])
+        self.target_train = wholeTrainData[0].values
+        wholeTrainData.drop([0],axis=1, inplace=True)
+        self.data_train = wholeTrainData
+
 
     # HotEncode given columns
     def hotEncode(self,columns):

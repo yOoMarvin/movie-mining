@@ -40,11 +40,12 @@ c.dropColumns([
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
 df = df.iloc[df.nonzero()[0]]
-print(df)
-print(c.data.columns)
+#print(df)
+#print(c.data.columns)
+
 
 # get parameters for GridSearch
-scorer = c.f1(average="micro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.svc() # get svc estimator
 cv = c.fold(
         k=10
@@ -53,7 +54,8 @@ cv = c.fold(
 # parameters to iterate in GridSearch
 parameters = {
     'multi_class':['ovr'],
-    'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}, None]
+    'class_weight':[None, 'balanced']
+    #'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}, None]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
@@ -76,8 +78,10 @@ c.gridSearchBestScore(gs)
 c.gridSearchResults2CSV(gs,parameters,"svc_results.csv")
 
 c.splitData()
+c.upsampleTrainData()
 
 c.fit_predict(gs.best_estimator_)
 print(c.confusion_matrix())
 
 c.classification_report()
+
