@@ -11,8 +11,11 @@ from time import time
 
 def RandomForest(df):
     classifier = ct.Classifier(df, 'productivity_binned_binary')
+    classifier.splitData()
+    #classifier.upsampleTrainData()
+    classifier.downsampleTrainData()
     
-    score = classifier.f1(average='micro')
+    score = classifier.f1(average='macro')
     estimator = classifier.randomForest()
     cv = classifier.fold(k=10, random_state=42)
 
@@ -29,10 +32,17 @@ def RandomForest(df):
                                param_grid,
                                print_results=False,
                                verbose=2,
-                               cv=cv)
+                               cv=cv,
+                               onTrainSet=True)
     classifier.gridSearchBestScore(gs)
     print("GridSearch for RandomForest took {}".format(time()-start))
     classifier.gridSearchResults2CSV(gs, param_grid, "randForest.csv")
+
+
+    #run classifier on test set and print classification report
+    classifier.fit_predict(gs.best_estimator_)
+    print(classifier.confusion_matrix())
+    classifier.classification_report()
     
     return
 
@@ -41,6 +51,5 @@ df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 
 df = df.drop(["original_title",
                   "adult",
-                  "productivity_binned_multi",
-                  "production_companies"],1)
+                  "productivity_binned_multi"],1)
 RandomForest(df)

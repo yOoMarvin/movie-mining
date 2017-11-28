@@ -1,4 +1,3 @@
 multi_class,class_weight,result
-ovr,"{'yes': 1, 'no': 5}",0.487487231869
-ovr,"{'yes': 1, 'no': 3}",0.595760980592
-ovr,"{'yes': 1, 'no': 1}",0.750255362615
+ovr,,0.464889344719
+ovr,balanced,0.464889344719

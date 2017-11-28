@@ -107,6 +107,40 @@ class Classifier:
         # Combine majority class with upsampled minority class
         self.data = pd.concat([df_majority, df_minority_upsampled])
 
+    def upsampleTrainData(self):
+        wholeTrainData = pd.merge(self.data_train, pd.DataFrame(self.target_train), left_index=True, right_index=True)
+        df_majority = wholeTrainData[wholeTrainData[0] == "yes"]
+        df_minority = wholeTrainData[wholeTrainData[0] == "no"]
+
+        # Upsample minority class
+        df_minority_upsampled = resample(df_minority,
+                                         replace=True,  # sample with replacement
+                                         n_samples=len(df_majority),  # to match majority class
+                                         random_state=42)  # reproducible results
+
+        # Combine majority class with upsampled minority class
+        wholeTrainData = pd.concat([df_majority, df_minority_upsampled])
+        self.target_train = wholeTrainData[0].values
+        wholeTrainData.drop([0],axis=1, inplace=True)
+        self.data_train = wholeTrainData
+
+    def downsampleTrainData(self):
+        wholeTrainData = pd.merge(self.data_train, pd.DataFrame(self.target_train), left_index=True, right_index=True)
+        df_majority = wholeTrainData[wholeTrainData[0] == "yes"]
+        df_minority = wholeTrainData[wholeTrainData[0] == "no"]
+
+        # Upsample minority class
+        df_majority_downsampled = resample(df_majority,
+                                         replace=True,  # sample with replacement
+                                         n_samples=len(df_minority),  # to match majority class
+                                         random_state=42)  # reproducible results
+
+        # Combine majority class with upsampled minority class
+        wholeTrainData = pd.concat([df_minority, df_majority_downsampled])
+        self.target_train = wholeTrainData[0].values
+        wholeTrainData.drop([0],axis=1, inplace=True)
+        self.data_train = wholeTrainData
+
 
     # HotEncode given columns
     def hotEncode(self,columns):
@@ -236,12 +270,18 @@ class Classifier:
         estimator.fit(self.data_train,self.target_train)
         self.predict = estimator.predict(self.data_test)
 
-    def gridSearch(self,estimator,scoring,parameters = [],verbose=0,print_results=True,cv=None):
-        print("starting GridSearch. Count of columns = {}".format( len(self.data.columns) ))
-        print("columns: {}" .format( self.data.columns ))
+    def gridSearch(self,estimator,scoring,parameters = [],verbose=0,print_results=True,cv=None,onTrainSet=False):
+        if onTrainSet:
+            dataset = self.data_train
+            targetset = self.target_train
+        else:
+            dataset = self.data
+            targetset = self.truth_arr
+        print("starting GridSearch. Count of columns = {}".format( len(dataset.columns) ))
+        print("columns: {}" .format( dataset.columns ))
 
         grid_search_estimator = GridSearchCV(estimator, parameters, scoring=scoring, verbose=verbose, cv=cv)
-        grid_search_estimator.fit(self.data,self.truth_arr)
+        grid_search_estimator.fit(dataset,targetset)
 
         if (print_results):
             print("best score is {} with params {}".format(grid_search_estimator.best_score_, grid_search_estimator.best_params_ ))
