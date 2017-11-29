@@ -15,14 +15,14 @@ import enconde_production_country as ep_country
 import interesting_colums as ic
 import normalize_column as nc
 import productivity as p
-import threshold_columns as tc
 import encode_language as el
+
 
 #split binary values 50/50
 setSplitBinary = False
 
 # set values for the thresholding during preprocessing
-filter = False
+filter = True
 threshold_actors = 0.076
 threshold_companies = 0.025
 threshold_directors = 0.05
@@ -40,7 +40,7 @@ print(status + 'limited to interesting columns')
 # read in actors and merge
 actors = pd.read_csv("../../data/raw/credits.csv", index_col=2)
 metadata = pd.merge(metadata, actors, left_index=True, right_index=True)
-print(metadata['original_language'])
+
 
 # metadata: convert collection to boolean
 metadata = cc.collection_to_boolean(metadata)
@@ -91,6 +91,8 @@ print(status + 'data normalized')
 #process actor column (returned)
 actors_column_processed = ea.encodeActorsToOne(metadata, filter, threshold_actors)
 print(status + 'encoded actors')
+print(list(actors_column_processed))
+
 
 # preprocess directors_column
 directors_column_processed = ed.encodeDirectorsToOne(metadata, filter, threshold_directors)
@@ -101,7 +103,7 @@ print(status + 'encoded directors')
 metadata = pd.concat([metadata, actors_column_processed], axis=1)
 metadata = pd.concat([metadata, directors_column_processed], axis=1)
 print(status + 'merged actors and directors into dataset')
-
+print(list(metadata))
 # metadata: drop irrelevant data
 # @date:2017-11-23
 # important: year, budget and quarter are not dropped anymore. Drop in classifier scripts if necessary!
@@ -142,9 +144,7 @@ metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
 
-#print(list([col for col in metadata if col.startswith('actor')]))
-metadata = tc.thresoldByColumn(metadata, threshold_actors, 'actor')
-metadata = tc.thresoldByColumn(metadata,threshold_directors, 'director')
+print(list(metadata))
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
