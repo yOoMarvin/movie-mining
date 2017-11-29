@@ -16,9 +16,9 @@ def encodeDirectorsToOne(df, filter, threshold):
     indices = []
     prefix = "director_"
     for index, row in df.iterrows():
-        director = re.search("\'name\': \'\w+(-* *\w*)*\'", row['crew'])
+        director = re.search("\'job\': \'Director\', \'name\': \'\w+(-* *\w*)*\'", row['crew'])
         if not(director is None):
-            director = director.group().replace("'name': ", "").replace("'", "")
+            director = director.group().replace("'job': 'Director', 'name': ", "").replace("'", "")
             director = prefix + director
             directors.append(director)
             indices.append(index)

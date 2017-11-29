@@ -15,7 +15,9 @@ import enconde_production_country as ep_country
 import interesting_colums as ic
 import normalize_column as nc
 import productivity as p
+import encode_language as el
 import sys
+
 
 
 #split binary values 50/50
@@ -23,9 +25,9 @@ setSplitBinary = False
 
 # set values for the thresholding during preprocessing
 filter = False
-threshold_actors = 0.076
-threshold_companies = 0.025
-threshold_directors = 0.05
+threshold_actors = 2
+threshold_companies = 2
+threshold_directors = 2
 
 status = '[Status: ]'
 start = time()
@@ -39,6 +41,10 @@ metadata = adj.adjust_measures(metadata)
 #limit metadata to relevant columns and rows only
 metadata = ic.interesting_columns(metadata)
 print(status + 'limited to interesting columns')
+
+#encode languages (one hot encoded)
+metadata = el.language_encoding(metadata)
+print(status + 'language encoded')
 
 # metadata: convert collection to boolean
 metadata = cc.collection_to_boolean(metadata)
@@ -69,6 +75,7 @@ print(status + 'binned productivity (multi bins)')
 metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata, filter, threshold_companies)], axis=1)
 print(status + 'encoded company')
 
+
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned_binary", "productivity_binned_multi"]]
 productivity.to_csv("../../data/processed/productivity.csv", encoding='utf-8')
@@ -82,8 +89,10 @@ metadata = nc.normalize_column_data(metadata, 'budget')
 print(status + 'data normalized')
 
 #process actor column (returned)
-actors_column_processed = ea.encodeActorsToOne(metadata, filter, threshold_actors)
+actors_column_processed = ea.encodeActors(metadata, filter, threshold_actors)
 print(status + 'encoded actors')
+#print(list(actors_column_processed))
+
 
 # preprocess directors_column
 directors_column_processed = ed.encodeDirectorsToOne(metadata, filter, threshold_directors)
@@ -96,7 +105,7 @@ print(status + 'encoded directors')
 metadata = pd.concat([metadata, actors_column_processed], axis=1)
 metadata = pd.concat([metadata, directors_column_processed], axis=1)
 print(status + 'merged actors and directors into dataset')
-
+#print(list(metadata))
 # metadata: drop irrelevant data
 # @date:2017-11-23
 # important: year, budget and quarter are not dropped anymore. Drop in classifier scripts if necessary!
@@ -107,12 +116,14 @@ metadata = metadata.drop([
         ,'production_countries'
         ,'production_companies'
         ,'productivity'
+        ,'original_language'
         ,'cast' # not needed anymore after preprocessing
         ,'crew'
 ],1)
 print(status + 'dropped irrelevant data')
 
 #split values into 50/50 relation
+#this function is outdated. Only use for testing
 if(setSplitBinary):
         high = metadata['productivity_binned_binary'].value_counts().yes
         low = metadata['productivity_binned_binary'].value_counts().no
@@ -137,7 +148,7 @@ metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
 
-
+#print(list(metadata))
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'

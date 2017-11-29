@@ -8,8 +8,8 @@ def interesting_columns(metadata):
     metadata.budget = metadata.budget.astype(np.float64)
     # focus on columns needed.
     metadata = metadata.loc[:,
-               ['original_title', 'adult', 'budget', 'genres', 'revenue', 'release_date', 'belongs_to_collection',
-                'production_countries', 'production_companies', 'runtime', "cast", "crew"]]
+               ['original_title', 'adult', 'budget', 'genres', 'revenue', 'release_date', 'belongs_to_collection', 'production_countries', 'production_companies', 'runtime', 'original_language', "cast", "crew"]]
+
     # query dataset based on valid revenue and valid budget, save to csv file
     
     # threshold for revenue and budget not needed anymore
