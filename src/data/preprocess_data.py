@@ -1,26 +1,27 @@
 # skript to perfom preprocessing on the data
+from time import time
+
 import pandas as pd
-import numpy as np
-import interesting_colums as ic
+
+import adjust_measures as adj
 import convert_collection as cc
 import convert_releasedate as cr
+import encode_actors as ea
+import encode_directors as ed
 import encode_genre as eg
-import productivity as p
 import encode_production_company as epc
 import encode_quarter as eq
 import enconde_production_country as ep_country
+import interesting_colums as ic
 import normalize_column as nc
-import encode_actors as ea
-import train_test_split as splitter
-import encode_directors as ed
-import adjust_measures as adj
-from time import time
+import productivity as p
+import threshold_columns as tc
 
 #split binary values 50/50
 setSplitBinary = False
 
 # set values for the thresholding during preprocessing
-filter = True
+filter = False
 threshold_actors = 0.076
 threshold_companies = 0.025
 threshold_directors = 0.05
@@ -98,7 +99,6 @@ print(status + 'merged actors and directors into dataset')
 # metadata: drop irrelevant data
 # @date:2017-11-23
 # important: year, budget and quarter are not dropped anymore. Drop in classifier scripts if necessary!
-
 metadata = metadata.drop([
         'genres'
         ,'revenue'
@@ -136,6 +136,9 @@ metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
 
+#print(list([col for col in metadata if col.startswith('actor')]))
+metadata = tc.thresoldByColumn(metadata, threshold_actors, 'actor')
+metadata = tc.thresoldByColumn(metadata,threshold_directors, 'director')
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
