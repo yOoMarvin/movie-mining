@@ -136,9 +136,7 @@ metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
 
-#print(list([col for col in metadata if col.startswith('actor')]))
-metadata = tc.thresoldByColumn(metadata, threshold_actors, 'actor')
-metadata = tc.thresoldByColumn(metadata,threshold_directors, 'director')
+
 
 # execute train-test-split
 # input: 'productivity_binned_binary' or 'productivity_binned_binary'
