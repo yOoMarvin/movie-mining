@@ -12,7 +12,7 @@ data = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary", upsample=True)
+c = ct.Classifier(df,"productivity_binned_binary")
 
 ### drop single columns not needed for Classification
 c.dropColumns([
@@ -33,14 +33,7 @@ c.dropColumns([
 #])
 
 ### drop columns by prefix if needed
-"""
-c.dropColumnByPrefix("actor")
-c.dropColumnByPrefix("director")
-c.dropColumnByPrefix("company")
-c.dropColumnByPrefix("country")
-c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
-"""
+### columns to drop extracted from feature select
 c.dropColumnByPrefix("country")
 c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("actor")
@@ -60,7 +53,7 @@ c.balanceInfo()
 
 
 # get parameters for GridSearch
-scorer = c.f1(average="macro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with macro averaging
 estimator = c.bayes() # get GaussianNB estimator
 
 cross_val = c.fold(
