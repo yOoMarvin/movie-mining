@@ -16,6 +16,7 @@ import interesting_colums as ic
 import normalize_column as nc
 import productivity as p
 import threshold_columns as tc
+import encode_language as el
 
 #split binary values 50/50
 setSplitBinary = False
@@ -39,7 +40,7 @@ print(status + 'limited to interesting columns')
 # read in actors and merge
 actors = pd.read_csv("../../data/raw/credits.csv", index_col=2)
 metadata = pd.merge(metadata, actors, left_index=True, right_index=True)
-
+print(metadata['original_language'])
 
 # metadata: convert collection to boolean
 metadata = cc.collection_to_boolean(metadata)
@@ -69,6 +70,11 @@ print(status + 'binned productivity (multi bins)')
 #print(epc.encodeProductionCompany(metadata))
 metadata = pd.concat([metadata, epc.encodeProductionCompany(metadata, filter, threshold_companies)], axis=1)
 print(status + 'encoded company')
+
+#encode languages (one hot encoded)
+metadata = el.language_encoding(metadata)
+print(status + 'language encoded')
+
 
 # keep productivity in a seperate file
 productivity = metadata[["productivity","productivity_binned_binary", "productivity_binned_multi"]]
