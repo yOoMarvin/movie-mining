@@ -29,8 +29,8 @@ def encodeDirectorsToOne(df, filter, threshold):
     directors_encoded = pd.get_dummies(directors)
 
     #actors_encoded['id'] = pd.Series(df['id'])
-    #if(filter):
-        #directors_encoded = epc.filterWithThreshold(directors_encoded, threshold)
+    if(filter):
+        directors_encoded = epc.filterWithThreshold(directors_encoded, threshold)
     #actors_encoded = epc.addPrefixToColumn(new_values_encoded, "actors")
     return directors_encoded
 
