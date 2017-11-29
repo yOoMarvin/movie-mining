@@ -24,7 +24,10 @@ from ModelSelection_NaiveBayes import data as nbd
 from ModelSelection_NaiveBayes import target as nbt
 
 
-
+### TODO
+### grab grid search parameter results of each classifier (from comment in model selection)
+### Grab the data which was used (dropped columns etc.)
+### Fit the model here with the cv and use it for roc curves
 
 
 # KStratifiedFold with random_state = 42
