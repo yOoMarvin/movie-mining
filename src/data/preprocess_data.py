@@ -16,6 +16,8 @@ import interesting_colums as ic
 import normalize_column as nc
 import productivity as p
 import encode_language as el
+import sys
+
 
 
 #split binary values 50/50
@@ -31,16 +33,14 @@ status = '[Status: ]'
 start = time()
 # read in raw csv files
 metadata = pd.read_csv("../../data/raw/movies_metadata.csv", index_col=5)
+credit = pd.read_csv("../../data/raw/credits.csv", index_col=2)
+# join credits
+metadata = metadata.join(credit,how="left")
 metadata = adj.adjust_measures(metadata)
 
 #limit metadata to relevant columns and rows only
 metadata = ic.interesting_columns(metadata)
 print(status + 'limited to interesting columns')
-
-# read in actors and merge
-actors = pd.read_csv("../../data/raw/credits.csv", index_col=2)
-metadata = pd.merge(metadata, actors, left_index=True, right_index=True)
-
 
 # metadata: convert collection to boolean
 metadata = cc.collection_to_boolean(metadata)
@@ -98,6 +98,8 @@ print(list(actors_column_processed))
 directors_column_processed = ed.encodeDirectorsToOne(metadata, filter, threshold_directors)
 print(status + 'encoded directors')
 
+#print(metadata["cast"])
+#sys.exit("Error message")
 
 # metadata: merge again with metadata
 metadata = pd.concat([metadata, actors_column_processed], axis=1)

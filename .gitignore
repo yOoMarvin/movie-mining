@@ -8,6 +8,7 @@ credits.csv
 
 # CSV Files in preprocessing
 data/external/thenumbers_measures.csv
+data/interim/actors_encoded.csv
 data/interim/companies.csv
 data/interim/companies_cleaned.csv
 data/interim/companies_to_movies.csv

@@ -191,7 +191,31 @@ class Classifier:
 
         for c in l:
             print("class: {}, len = {} -> {}%".format( c,l[c],round(l[c]/total,2)*100 ))
+    
+    
+    def _thresholdByColumn(self,df, threshold, prefix):
+        """
+        Filters encoded columns.
+        Takes only columns that have at least the threshold % ones
+        :param df: complete dataframe, values need to have prefix, need to be one hot encoded
+        :param threshold: Percentage of ones in column
+        :return: filtered, complete DataFrame
+        """
+        filter_col = [col for col in df if col.startswith(prefix)]
+        df_selected_columns = pd.DataFrame(df[filter_col])
+        df.drop(filter_col, axis=1, inplace=True)
+        columns = []
+        for column in df_selected_columns:
+            if not (df_selected_columns[column].value_counts()[1] >= threshold):
+                columns.append(column)
+        df_selected_columns.drop(columns, axis=1, inplace = True)
+        df = pd.concat([df, df_selected_columns], axis=1)
+        return df
+
+    def thresholdByColumn(self, threshold, prefix):
+        self.data = self._thresholdByColumn(self.data,threshold,prefix)
             
+    # return the dataset including the truth values
     def getData(self):
         return pd.concat([self.data, self.truth], axis=1)
 
