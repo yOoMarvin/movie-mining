@@ -13,21 +13,22 @@ data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 # DataFrame containing label (!)
 df = pd.DataFrame(data)
 
+label_column = "productivity_binned_binary"
+
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary")
+c = ct.Classifier(df,label_column)
 
 ### drop single columns not needed for Classification
 c.dropColumns([
         "original_title"
-        ,"productivity_binned_multi"
-        #,"productivity_binned_binary"
-        
-        ,"adult"
+        #,"adult"
         #,"belongs_to_collection"
-        ,"budget"
+        #,"budget"
         #,"runtime"
         #,"year"
         ,"quarter"
+        ,"productivity_binned_multi"
+        #,"productivity_binned_binary"
 ])
 
 ### scale something if needed
@@ -36,12 +37,12 @@ c.dropColumns([
 #])
 
 ### drop columns by prefix if needed
-c.dropColumnByPrefix("actor")
-c.dropColumnByPrefix("director")
+#c.dropColumnByPrefix("actor")
+#c.dropColumnByPrefix("director")
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
-c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
+#c.dropColumnByPrefix("genre")
+#c.dropColumnByPrefix("quarter_")
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -61,7 +62,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,15)
+    "n_neighbors":range(5,6)
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -79,8 +80,8 @@ parameters = {
     ]
     ,"metric":[
             "euclidean"
-            ,"manhattan"
-            ,"chebyshev"
+            #,"manhattan"
+            #,"chebyshev"
             #,"minkowski"
             #,"wminkowski" # throws error: additional metric parameters might be missing
             #,"seuclidean" # throws error: additional metric parameters might be missing
@@ -90,43 +91,51 @@ parameters = {
     #,"n_jobs":[1]
 }
 
+features = [
+            "adult",
+            "belongs_to_collection",
+            "budget",
+            "runtime",
+            "year",
+            "actor_",
+            "director_",
+            "company_",
+            "country_",
+            "genre_",
+            "quarter_"
+]
 
-# calculate cross validation: try samplings
-estimator.set_params(
-        n_neighbors=5
-        ,algorithm="auto"
-        ,weights="distance"
-        ,p=2
-        ,metric="euclidean"
-)
-print(c.cross_validate(cv,estimator,sample=""))
-
-
-"""
-# compute GridSearch
-gs = c.gridSearch(
-        estimator
-        ,scorer
+# compute FeatureSelect
+gs = c.featureselect_greedy(
+        features
         ,parameters
-        ,print_results=False # let verbose print the results
-        ,verbose=2
-        ,cv=cv
+        ,scorer
+        ,estimator
+        ,cv
+        ,label_column
 )
 
-# print best result
-c.gridSearchBestScore(gs)
+#print(gs)
 
-# Best score is 0.3237997957099081 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 9, 'p': 2, 'weights': 'distance'}.
 
-# save all results in csv
-c.gridSearchResults2CSV(gs,parameters,"results_kNN.csv")
-"""
 
 
 """
-
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5793221353439061 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 5, 'p': 2, 'weights': 'distance'}.
-------------------------------------------------------------------------------
- 
+    CURRENT BEST STATS
+    -------------
+    "n_neighbors":range(5,6)
+    ,"algorithm":[
+            "auto"
+    ]
+    ,"weights":[
+            "distance"
+    ]
+    ,"p":[
+            2
+    ]
+    ,"metric":[
+            "euclidean"
+    -------------
+    CURRENT: 0.5793221353439061, MAX: 0.5766128624882128, FEATURE: country_
+    DROPPED: ['genre_', 'budget', 'quarter_', 'adult', 'actor_', 'director_']
 """
