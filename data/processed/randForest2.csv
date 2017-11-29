@@ -1,0 +1,3 @@
+n_estimators,max_depth,max_features,min_samples_split,min_samples_leaf,bootstrap,criterion,result
+20,,20,3,3,False,entropy,0.881862954934
+20,,20,3,5,False,entropy,0.860153859478

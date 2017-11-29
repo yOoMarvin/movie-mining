@@ -19,15 +19,14 @@ c = ct.Classifier(df,"productivity_binned_binary")
 ### drop single columns not needed for Classification
 c.dropColumns([
         "original_title"
+        #,"adult"
+        #,"belongs_to_collection"
+        #,"budget"
+        #,"runtime"
+        ,"year"
+        #,"quarter"
         ,"productivity_binned_multi"
         #,"productivity_binned_binary"
-        
-        ,"adult"
-        #,"belongs_to_collection"
-        ,"budget"
-        #,"runtime"
-        #,"year"
-        ,"quarter"
 ])
 
 ### scale something if needed
@@ -36,11 +35,11 @@ c.dropColumns([
 #])
 
 ### drop columns by prefix if needed
-c.dropColumnByPrefix("actor")
-c.dropColumnByPrefix("director")
+#c.dropColumnByPrefix("actor")
+#c.dropColumnByPrefix("director")
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
-c.dropColumnByPrefix("genre")
+#c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
 # lets print all non-zero columns of a movie to doublecheck
@@ -61,7 +60,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,15)
+    "n_neighbors":range(3,10)
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -79,8 +78,8 @@ parameters = {
     ]
     ,"metric":[
             "euclidean"
-            ,"manhattan"
-            ,"chebyshev"
+            #,"manhattan"
+            #,"chebyshev"
             #,"minkowski"
             #,"wminkowski" # throws error: additional metric parameters might be missing
             #,"seuclidean" # throws error: additional metric parameters might be missing
@@ -91,18 +90,6 @@ parameters = {
 }
 
 
-# calculate cross validation: try samplings
-estimator.set_params(
-        n_neighbors=5
-        ,algorithm="auto"
-        ,weights="distance"
-        ,p=2
-        ,metric="euclidean"
-)
-print(c.cross_validate(cv,estimator,sample=""))
-
-
-"""
 # compute GridSearch
 gs = c.gridSearch(
         estimator
@@ -120,13 +107,3 @@ c.gridSearchBestScore(gs)
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"results_kNN.csv")
-"""
-
-
-"""
-
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5793221353439061 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 5, 'p': 2, 'weights': 'distance'}.
-------------------------------------------------------------------------------
- 
-"""
