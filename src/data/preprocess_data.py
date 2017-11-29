@@ -20,6 +20,7 @@ import sys
 
 
 
+
 #split binary values 50/50
 setSplitBinary = False
 
@@ -144,7 +145,7 @@ if(setSplitBinary):
         #print(metadata)
 
 #safe dataset to file, important: encode as UTF-8
-metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
+#metadata.to_csv("../../data/interim/only_useful_datasets.csv", encoding='utf-8')
 metadata.to_csv("../../data/processed/train_set.csv", encoding='utf-8')
 print(status + 'new dataset should be saved, doublecheck in folder')
 
