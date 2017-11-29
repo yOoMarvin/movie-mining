@@ -14,12 +14,12 @@ c = ct.Classifier(df,"productivity_binned_binary")
 # drop columns not needed for Classification
 c.dropColumns([
          "original_title"
-        #,"adult"
+        ,"adult"
         #,"belongs_to_collection"
         #,"budget"
         #,"runtime"
-        ,"year"
-        #,"quarter"
+        #,"year"
+        ,"quarter"
         ,"productivity_binned_multi"
         #,"productivity_binned_binary"
 ])
@@ -30,12 +30,12 @@ c.dropColumns([
 #])
 
 ### drop columns by prefix if needed
-#c.dropColumnByPrefix("actor")
-#c.dropColumnByPrefix("director")
+c.dropColumnByPrefix("actor_")
+c.dropColumnByPrefix("director_")
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
-#c.dropColumnByPrefix("quarter_")
+c.dropColumnByPrefix("quarter_")
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -45,7 +45,7 @@ print(c.data.columns)
 
 c.splitData()
 #c.upsampleTrainData()
-c.downsampleTrainData()
+#c.downsampleTrainData()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with micro averaging
@@ -63,7 +63,7 @@ parameters = {
     #,"n_jobs":[1]
 }
 
-
+"""
 # compute GridSearch
 gs = c.gridSearch(
         estimator
@@ -72,7 +72,7 @@ gs = c.gridSearch(
         ,print_results=False # let verbose print the results
         ,verbose=2
         ,cv=cv
-        ,onTrainSet=True
+        ,onTrainSet=False
 )
 
 # print best result
@@ -80,11 +80,28 @@ c.gridSearchBestScore(gs)
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"svc_results.csv")
+"""
+
+# calculate cross validation: try samplings
+estimator.set_params(
+        n_neighbors=5
+        ,algorithm="auto"
+        ,weights="distance"
+        ,p=2
+        ,metric="euclidean"
+)
+print(c.cross_validate(cv,estimator,sample=""))
 
 
-
-c.fit_predict(gs.best_estimator_)
-print(c.confusion_matrix())
-
-c.classification_report()
+"""
+--------------------------- GRID SEARCH BEST SCORE ---------------------------
+ Best score is 0.5771136567507072 with params {'class_weight': 'balanced', 'multi_class': 'ovr'}.
+ ------------------------------------------------------------------------------
+ No extra features dropped
+ 
+ --------------------------- GRID SEARCH BEST SCORE ---------------------------
+ Best score is 0.5786578739249424 with params {'class_weight': 'balanced', 'multi_class': 'ovr'}.
+ ------------------------------------------------------------------------------
+ DROPPED: ['quarter_', 'adult', 'actor_', 'director_']
+"""
 

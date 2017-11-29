@@ -1,7 +1,29 @@
 import pandas as pd
 import re
-import encode_production_company as epc
+from addPrefixToColumn import addPrefixToColumn
 
+
+def encodeActors(df):
+    actors = []
+    indices = []
+    prefix = "actor_"
+    count = 0
+    for index, row in df.iterrows():
+        count += 1
+        actorsInRow = ""
+        firstactor = True
+        for actor  in re.finditer("\'name\': \'\w+(-* *\w*)*\'", row['cast']):
+            if not firstactor:
+                actorsInRow += "|"
+            if not (actor is None):
+                actorsInRow += prefix + actor.group().replace("'name': ", "").replace("'", "")
+            firstactor = False
+        actors.append(actorsInRow)
+        indices.append(index)
+
+    actors_encoded = pd.Series(actors, index=indices).str.get_dummies()
+    actors_encoded.to_csv("../../data/interim/actors_encoded.csv", encoding='utf-8')
+    return actors_encoded
 
 def encodeActorsToOne(df, filter, threshold):
     """

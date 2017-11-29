@@ -3,22 +3,23 @@
 import ClassifierTemplate as ct
 import pandas as pd
 
-
 data = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 
 # DataFrame containing label (!)
 df = pd.DataFrame(data)
 
+label_column = "productivity_binned_binary"
+
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary", False)
+c = ct.Classifier(df,label_column)
 
 # drop columns not needed for Classification
 c.dropColumns([
-        "original_title"
-        ,"adult"
+         "original_title"
+        #,"adult"
         #,"belongs_to_collection"
         #,"budget"
-        ,"runtime"
+        #,"runtime"
         #,"year"
         ,"quarter"
         ,"productivity_binned_multi"
@@ -36,12 +37,11 @@ c.dropColumns([
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
-
+#c.dropColumnByPrefix("quarter_")
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
-#df = df.iloc[df.nonzero()[0]]
+df = df.iloc[df.nonzero()[0]]
 print(df)
 print(c.data.columns)
 
@@ -51,49 +51,50 @@ c.splitData()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with macro averaging
-estimator = c.tree() # get decisionTree estimator
+estimator = c.svc() # get svc estimator
 cv = c.fold(
         k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    'criterion':['gini', 'entropy'],
-    'max_depth':[1, 2, 3, 4, 5, 10, 50, 100, None],
-    'min_samples_split' :[2,3,4,5],
-    'class_weight': [{'yes':1, 'no':1}, None]
+    'multi_class':['ovr'],
+    'class_weight':['balanced']
+    #'class_weight': [{'yes':1, 'no':5}, {'yes':1, 'no':3}, {'yes':1, 'no':1}, None]
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
 
 
-# compute GridSearch
-gs = c.gridSearch(
-        estimator
-        ,scorer
+features = [
+            "adult",
+            "belongs_to_collection",
+            "budget",
+            "runtime",
+            "year",
+            "actor_",
+            "director_",
+            "company_",
+            "country_",
+            "genre_",
+            "quarter_"
+]
+
+# compute FeatureSelect
+gs = c.featureselect_greedy(
+        features
         ,parameters
-        ,print_results=False # let verbose print the results
-        ,verbose=2
-        ,cv=cv
-        ,onTrainSet=False
+        ,scorer
+        ,estimator
+        ,cv
+        ,label_column
 )
 
-
-# print best result
-c.gridSearchBestScore(gs)
-
-# save all results in csv
-c.gridSearchResults2CSV(gs,parameters,"tree_results.csv")
-
-c.fit_predict(gs.best_estimator_)
-print(c.confusion_matrix())
-
-c.classification_report()
-
-
 """
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5837057222077614 with params {'class_weight': None, 'criterion': 'entropy', 'max_depth': 100, 'min_samples_split': 5}.
- ------------------------------------------------------------------------------
- DROPPED: ['quarter_', 'runtime', 'adult']
+=====NO IMPROVEMENTS=====
+SCORES: {'belongs_to_collection': 0.5562500378516172, 'budget': 0.57859298966949679, 'runtime': 0.57331267034189004, 'year': 0.56026353327085598, 'company_': 0.56227028114319433, 'country_': 0.5632187472306216, 'genre_': 0.57230307165306782}
+CURRENT: 0.5786578739249424, MAX: 0.5785929896694968, FEATURE: budget
+DROPPED: ['quarter_', 'adult', 'actor_', 'director_']
+=========================
 """
+
