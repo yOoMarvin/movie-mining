@@ -21,7 +21,6 @@ def encodeDirectorsToOne(df, filter, threshold):
             director = director.group().replace("'job': 'Director', 'name': ", "").replace("'", "")
             director = prefix + director
             directors.append(director)
-            print(director)
             indices.append(index)
         else:
             directors.append("")
