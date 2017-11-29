@@ -50,7 +50,7 @@ def encodeProductionCompany(df, filter, threshold):
     if (filter):    
        new_values_encoded = filterWithThreshold(new_values_encoded, threshold)
     new_values_encoded = addPrefixToColumn(new_values_encoded, "company")
-    print('done adding prefix')
+    #print('done adding prefix')
 
     return new_values_encoded
 
@@ -91,14 +91,13 @@ def filterWithThreshold(df, threshold):
     """
     size = len(df)
     columns = []
+    removed_items = 0
     for column in df:
-        if not (df[column].value_counts()[1]/size >= threshold):
+        if not (df[column].value_counts()[1] >= threshold):
             columns.append(column)
-
-    print(columns)
+            removed_items = removed_items + 1
     df.drop(columns, axis=1, inplace = True)
-    print('filtered data')
-    print(list(df))
+
     return df
 
 def companiesForHistogramm(df):
