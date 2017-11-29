@@ -15,7 +15,7 @@ import enconde_production_country as ep_country
 import interesting_colums as ic
 import normalize_column as nc
 import productivity as p
-import threshold_columns as tc
+
 
 #split binary values 50/50
 setSplitBinary = False
