@@ -94,8 +94,11 @@ def filterWithThreshold(df, threshold):
     for column in df:
         if not (df[column].value_counts()[1]/size >= threshold):
             columns.append(column)
-    df.drop(columns, axis=1, inplace = True)
 
+    print(columns)
+    df.drop(columns, axis=1, inplace = True)
+    print('filtered data')
+    print(list(df))
     return df
 
 def companiesForHistogramm(df):
