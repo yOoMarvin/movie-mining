@@ -43,6 +43,12 @@ c.dropColumnByPrefix("director")
 c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
+#c.thresholdByColumn(2,"company")
+print(len(c.data.columns))
+#c.thresholdByColumn(3,"actor")
+#c.thresholdByColumn(2,"director")
+print(len(c.data.columns))
+
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
 df = df.iloc[df.nonzero()[0]]
@@ -124,9 +130,15 @@ c.gridSearchResults2CSV(gs,parameters,"results_kNN.csv")
 
 
 """
-
 --------------------------- GRID SEARCH BEST SCORE ---------------------------
  Best score is 0.5793221353439061 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 5, 'p': 2, 'weights': 'distance'}.
 ------------------------------------------------------------------------------
- 
+
+CROSS VALIDATION PARAMETERS AND VALUE
+        n_neighbors=5
+        ,algorithm="auto"
+        ,weights="distance"
+        ,p=2
+        ,metric="euclidean"
+{'f1': 0.57931608837764381, 'no': 749, 'yes': 3167}
 """

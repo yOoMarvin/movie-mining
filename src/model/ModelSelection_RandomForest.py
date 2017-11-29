@@ -38,7 +38,7 @@ def RandomForest(df):
     start = time()
 
     
-    
+    """
     gs = classifier.gridSearch(estimator,
                                score,
                                param_grid,
@@ -50,7 +50,7 @@ def RandomForest(df):
     classifier.gridSearchBestScore(gs)
     print("GridSearch for RandomForest took {}".format(time()-start))
     classifier.gridSearchResults2CSV(gs, param_grid, "randForest.csv")
-
+    """
     
     
     # calculate cross validation: try samplings

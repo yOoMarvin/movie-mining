@@ -12,7 +12,7 @@ data = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
-c = ct.Classifier(df,"productivity_binned_binary", upsample=True)
+c = ct.Classifier(df,"productivity_binned_binary")
 
 ### drop single columns not needed for Classification
 c.dropColumns([
@@ -22,7 +22,7 @@ c.dropColumns([
         #,"budget"
         ,"runtime"
         #,"year"
-        #,"quarter"
+        ,"quarter"
         ,"productivity_binned_multi"
         #,"productivity_binned_binary"
 ])
@@ -76,7 +76,7 @@ parameters = {
     #,"n_jobs":[1]
 }
 
-
+"""
 # compute GridSearch
 gs = c.gridSearch(
         estimator
@@ -97,3 +97,8 @@ c.gridSearchResults2CSV(gs,parameters,"naivebayes_results.csv")
 estimator = gs.best_estimator_
 data = c.data
 target = c.truth_arr
+"""
+
+estimator.set_params(
+)
+print(c.cross_validate(cross_val,estimator,sample=""))
