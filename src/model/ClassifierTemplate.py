@@ -191,6 +191,83 @@ class Classifier:
 
         for c in l:
             print("class: {}, len = {} -> {}%".format( c,l[c],round(l[c]/total,2)*100 ))
+            
+    def getData(self):
+        return pd.concat([self.data, self.truth], axis=1)
+
+
+
+    """
+        Methods for Feature Selection
+    """
+    
+    def featureselect_greedy(self, features, parameters, scoring, estimator, cv, label_column, data=[], score_current = 0, dropped = []):
+        if (len(data)==0):
+            data = self.getData()
+        
+        if (score_current == 0):
+            c = Classifier(data,label_column)
+            gs = c.gridSearch(
+                    estimator,
+                    scoring,
+                    parameters,
+                    verbose=1,
+                    print_results=False,
+                    cv=cv
+            )
+            score_current = gs.best_score_
+        
+        scores = self._featureselect_iterate(features,parameters,scoring,estimator,cv,label_column,data)
+        feature_max = max(scores, key=scores.get)
+        score_max = scores[feature_max]
+        
+        if (score_max >= score_current):
+            print("=========================")
+            print("DROPPING: {}".format(feature_max))
+            print("CURRENT: {}, MAX: {}".format(score_current,score_max))
+            print("=========================")
+            c = Classifier(data,label_column)
+            score_current = score_max
+            dropped.append(feature_max)
+            
+            if feature_max[-1:] == "_":
+                c.dropColumnByPrefix(feature_max)
+            else:
+                c.dropColumns([feature_max])
+            data = c.getData()
+            del c
+            features.remove(feature_max)
+            self.featureselect_greedy(features,parameters,scoring,estimator,cv,label_column,data,score_current,dropped)
+        else:
+            print("=====NO IMPROVEMENTS=====")
+            print("SCORES: {}".format(scores))
+            print("CURRENT: {}, MAX: {}, FEATURE: {}".format(score_current,score_max,feature_max))
+            print("DROPPED: {}".format(dropped))
+            print("=========================")
+        
+    def _featureselect_iterate(self, features, parameters, scoring, estimator, cv, label_column, data):
+        scores = {}
+        
+        for feature in features:
+            c = Classifier(data,label_column)
+            if feature[-1:] == "_":
+                c.dropColumnByPrefix(feature)
+            else:
+                c.dropColumns([feature])
+            gs = c.gridSearch(
+                    estimator,
+                    scoring,
+                    parameters,
+                    verbose=0,
+                    print_results=False,
+                    cv=cv
+            )
+            scores[feature] = gs.best_score_
+            del c
+        
+        return scores
+
+
 
     """
         Methods for Classification
@@ -231,11 +308,21 @@ class Classifier:
     def fold(self,k=10,random_state=42,shuffle=True):
         return StratifiedKFold(n_splits=k, shuffle=shuffle, random_state=random_state)
     
-    def cross_validate(self,cv,estimator):
+    def cross_validate(self,cv,estimator,sample=""):
         scores = []
         counts = {}
         for train_indices, test_indices in cv.split(self.data, self.truth_arr):
             train_data, train_target = self.data.iloc[train_indices], self.truth_arr[train_indices]
+            
+            print("train data unsampled",len(train_data))
+            
+            if (sample == "up"):
+                train_data, train_target = self._upsampleCV(train_data,train_target)
+            elif (sample == "down"):
+                train_data, train_target = self._downsampleCV(train_data,train_target)
+                
+            print("train data sampled",len(train_data))
+            
             estimator.fit(train_data, train_target)
             
             test_data, test_target = self.data.iloc[test_indices], self.truth_arr[test_indices]
@@ -255,6 +342,40 @@ class Classifier:
         r = {"f1":sum(scores)/len(scores)}
         r.update(counts)
         return r
+    
+    def _upsampleCV(self,train_data,train_target):
+        wholeTrainData = train_data.assign(truth=train_target)
+        df_majority = wholeTrainData[wholeTrainData["truth"] == "yes"]
+        df_minority = wholeTrainData[wholeTrainData["truth"] == "no"]
+
+        # Upsample minority class
+        df_minority_upsampled = resample(df_minority,
+                                         replace=True,  # sample with replacement
+                                         n_samples=len(df_majority),  # to match majority class
+                                         random_state=42)  # reproducible results
+
+        # Combine majority class with upsampled minority class
+        wholeTrainData = pd.concat([df_majority, df_minority_upsampled])
+        train_target = wholeTrainData["truth"].values
+        train_data = wholeTrainData.drop(["truth"],axis=1)
+        return train_data, train_target
+
+    def _downsampleCV(self,train_data,train_target):
+        wholeTrainData = train_data.assign(truth=train_target)
+        df_majority = wholeTrainData[wholeTrainData["truth"] == "yes"]
+        df_minority = wholeTrainData[wholeTrainData["truth"] == "no"]
+
+        # Upsample minority class
+        df_majority_downsampled = resample(df_majority,
+                                         replace=True,  # sample with replacement
+                                         n_samples=len(df_minority),  # to match majority class
+                                         random_state=42)  # reproducible results
+
+        # Combine majority class with upsampled minority class
+        wholeTrainData = pd.concat([df_minority, df_majority_downsampled])
+        train_target = wholeTrainData["truth"].values
+        train_data = wholeTrainData.drop(["truth"],axis=1)
+        return train_data, train_target
         
 
     def splitData(self, size = 0.2, random = 42):

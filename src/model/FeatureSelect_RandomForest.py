@@ -55,41 +55,18 @@ c.balanceInfo()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with micro averaging
-estimator = c.knn() # get kNN estimator
+estimator = c.randomForest()
 cv = c.fold(
         k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
-parameters = {
-    "n_neighbors":range(5,6)
-    ,"algorithm":[
-            "auto"
-            #,"ball_tree"
-            #,"kd_tree"
-            #,"brute"
-    ]
-    ,"weights":[
-            #"uniform"
-            "distance"
-    ]
-    ,"p":[
-            #1
-            2
-            #,3
-    ]
-    ,"metric":[
-            "euclidean"
-            #,"manhattan"
-            #,"chebyshev"
-            #,"minkowski"
-            #,"wminkowski" # throws error: additional metric parameters might be missing
-            #,"seuclidean" # throws error: additional metric parameters might be missing
-            #,"mahalanobis" # throws error: additional metric parameters might be missing
-    ]
-    # parameter can be used to tweak parallel computation / n = # of jobs
-    #,"n_jobs":[1]
-}
+param_grid = {"max_depth": [None],
+              "max_features": [10],
+              "min_samples_split": [2],
+              "min_samples_leaf": [1],
+              "bootstrap": [False],
+              "criterion": ["entropy"]}
 
 features = [
             "adult",
@@ -108,7 +85,7 @@ features = [
 # compute FeatureSelect
 gs = c.featureselect_greedy(
         features
-        ,parameters
+        ,param_grid
         ,scorer
         ,estimator
         ,cv
@@ -123,19 +100,13 @@ gs = c.featureselect_greedy(
 """
     CURRENT BEST STATS
     -------------
-    "n_neighbors":range(5,6)
-    ,"algorithm":[
-            "auto"
-    ]
-    ,"weights":[
-            "distance"
-    ]
-    ,"p":[
-            2
-    ]
-    ,"metric":[
-            "euclidean"
+    param_grid = {"max_depth": [None],
+                  "max_features": [10],
+                  "min_samples_split": [2],
+                  "min_samples_leaf": [1],
+                  "bootstrap": [False],
+                  "criterion": ["entropy"]}
     -------------
-    CURRENT: 0.5793221353439061, MAX: 0.5766128624882128, FEATURE: country_
-    DROPPED: ['genre_', 'budget', 'quarter_', 'adult', 'actor_', 'director_']
+    CURRENT: 0.5936501889483914, MAX: 0.5886381702831502, FEATURE: company_
+    DROPPED: ['actor_', 'quarter_']
 """

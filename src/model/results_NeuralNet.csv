@@ -1,2 +1,2 @@
 solver,hidden_layer_sizes,activation,alpha,max_iter,random_state,result
-sgd,"(100,)",logistic,0.0001,200,42,0.5
+sgd,"(100,)",logistic,0.0001,200,42,0.430234246824

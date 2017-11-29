@@ -55,40 +55,13 @@ c.balanceInfo()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with micro averaging
-estimator = c.knn() # get kNN estimator
+estimator = c.bayes()
 cv = c.fold(
         k=10
         ,random_state=42
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(5,6)
-    ,"algorithm":[
-            "auto"
-            #,"ball_tree"
-            #,"kd_tree"
-            #,"brute"
-    ]
-    ,"weights":[
-            #"uniform"
-            "distance"
-    ]
-    ,"p":[
-            #1
-            2
-            #,3
-    ]
-    ,"metric":[
-            "euclidean"
-            #,"manhattan"
-            #,"chebyshev"
-            #,"minkowski"
-            #,"wminkowski" # throws error: additional metric parameters might be missing
-            #,"seuclidean" # throws error: additional metric parameters might be missing
-            #,"mahalanobis" # throws error: additional metric parameters might be missing
-    ]
-    # parameter can be used to tweak parallel computation / n = # of jobs
-    #,"n_jobs":[1]
 }
 
 features = [
@@ -123,19 +96,7 @@ gs = c.featureselect_greedy(
 """
     CURRENT BEST STATS
     -------------
-    "n_neighbors":range(5,6)
-    ,"algorithm":[
-            "auto"
-    ]
-    ,"weights":[
-            "distance"
-    ]
-    ,"p":[
-            2
-    ]
-    ,"metric":[
-            "euclidean"
     -------------
-    CURRENT: 0.5793221353439061, MAX: 0.5766128624882128, FEATURE: country_
-    DROPPED: ['genre_', 'budget', 'quarter_', 'adult', 'actor_', 'director_']
+    CURRENT: 0.5777344042802942, MAX: 0.5768217564317245, FEATURE: quarter_
+    DROPPED: ['country_', 'genre_', 'runtime', 'adult', 'actor_', 'director_']
 """

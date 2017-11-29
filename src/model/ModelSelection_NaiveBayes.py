@@ -17,11 +17,11 @@ c = ct.Classifier(df,"productivity_binned_binary")
 ### drop single columns not needed for Classification
 c.dropColumns([
         "original_title"
-        #,"adult"
+        ,"adult"
         #,"belongs_to_collection"
         #,"budget"
-        #,"runtime"
-        ,"year"
+        ,"runtime"
+        #,"year"
         #,"quarter"
         ,"productivity_binned_multi"
         #,"productivity_binned_binary"
@@ -33,12 +33,18 @@ c.dropColumns([
 #])
 
 ### drop columns by prefix if needed
+"""
 c.dropColumnByPrefix("actor")
 c.dropColumnByPrefix("director")
 c.dropColumnByPrefix("company")
 c.dropColumnByPrefix("country")
 c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
+"""
+c.dropColumnByPrefix("country")
+c.dropColumnByPrefix("genre")
+c.dropColumnByPrefix("actor")
+c.dropColumnByPrefix("director")
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -54,7 +60,7 @@ c.balanceInfo()
 
 
 # get parameters for GridSearch
-scorer = c.f1(average="micro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.bayes() # get GaussianNB estimator
 
 cross_val = c.fold(
