@@ -25,9 +25,16 @@ def RandomForest(df):
             ,"productivity_binned_multi"
     ])
     
-    classifier.dropColumnByPrefix("actor")
-    classifier.dropColumnByPrefix("quarter")
-
+    #classifier.dropColumnByPrefix("actor")
+    #classifier.dropColumnByPrefix("quarter")
+    
+    """
+    print(len(c.data.columns))
+    c.thresholdByColumn(3,"company")
+    c.thresholdByColumn(8,"actor")
+    c.thresholdByColumn(3,"director")
+    print(len(c.data.columns))
+    """
     
     param_grid = {"max_depth": [3, None],
                   "max_features": [1,3,10],
@@ -38,7 +45,7 @@ def RandomForest(df):
     start = time()
 
     
-    """
+    
     gs = classifier.gridSearch(estimator,
                                score,
                                param_grid,
@@ -50,7 +57,7 @@ def RandomForest(df):
     classifier.gridSearchBestScore(gs)
     print("GridSearch for RandomForest took {}".format(time()-start))
     classifier.gridSearchResults2CSV(gs, param_grid, "randForest.csv")
-    """
+    
     
     
     # calculate cross validation: try samplings
@@ -75,7 +82,8 @@ def RandomForest(df):
 #import data set
 df = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
 
-RandomForest(df)
+#RandomForest(df)
+print(df.shape)
 
 """
 --------------------------- GRID SEARCH BEST SCORE ---------------------------
