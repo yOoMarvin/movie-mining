@@ -13,15 +13,16 @@ Created on Thu Nov 16 13:07:06 2017
 from sklearn import preprocessing
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn import tree
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
 
 # Custom imports of classifications
-from ModelSelection_NaiveBayes import estimator as nbe
-from ModelSelection_NaiveBayes import data as nbd
-from ModelSelection_NaiveBayes import target as nbt
+from ModelSelection_NaiveBayes import c as nb
 
 
 ### TODO
@@ -40,9 +41,9 @@ cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 
 ##### NAIVE BAYES #####
 print('#########   NAIVE BAYES EVALUATION   #########')
-naivebayes_data = nbd
-naivebayes_target = nbt
-naivebayes_estimator = nbe
+naivebayes_data = nb.data
+naivebayes_target = nb.truth_arr
+naivebayes_estimator = GaussianNB()
 
 naivebayes_estimator.fit(naivebayes_data, naivebayes_target)
 
@@ -50,7 +51,7 @@ naivebayes_scores = cross_val_score(naivebayes_estimator,
                                     naivebayes_data,
                                     naivebayes_target,
                                     cv=cv,
-                                    scoring='f1_micro')
+                                    scoring='f1_macro')
 
 print("Naive Bayes F1 Score: %0.2f (+/- %0.2f)" % (naivebayes_scores.mean(), naivebayes_scores.std() * 2))
 
