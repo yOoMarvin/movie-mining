@@ -16,7 +16,9 @@ def adjust_measures(metadata):
     metadata = metadata[~metadata.index.duplicated(keep='first')]
     measures = measures[~measures.index.duplicated(keep='first')]
     
+    metadata = metadata.drop(["budget","revenue"],axis=1)
     # assign new budget values    
-    metadata = measures.combine_first(metadata)
+    #metadata = measures.combine_first(metadata)
+    metadata = metadata.join(measures,how="left")
     
     return metadata

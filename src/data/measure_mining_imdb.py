@@ -93,13 +93,7 @@ def start():
     for df in splitted:
         iterate(df,splitted)
         
-try:
-    start()
-    print("")
-except Exception as e:
-    print("!!! CRASH !!! WAITING AND RESTARTING !!!",e)
-    time.sleep(30)
-    start()
+start()
     
 
 """

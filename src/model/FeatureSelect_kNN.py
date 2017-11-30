@@ -44,6 +44,10 @@ c.dropColumns([
 #c.dropColumnByPrefix("genre")
 #c.dropColumnByPrefix("quarter_")
 
+c.thresholdByColumn(3,"company")
+c.thresholdByColumn(8,"actor")
+c.thresholdByColumn(3,"director")
+
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
 df = df.iloc[df.nonzero()[0]]
@@ -62,7 +66,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(5,6)
+    "n_neighbors":[3] #range(5,6)
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -79,8 +83,8 @@ parameters = {
             #,3
     ]
     ,"metric":[
-            "euclidean"
-            #,"manhattan"
+            #"euclidean"
+            "manhattan"
             #,"chebyshev"
             #,"minkowski"
             #,"wminkowski" # throws error: additional metric parameters might be missing
@@ -102,7 +106,8 @@ features = [
             "company_",
             "country_",
             "genre_",
-            "quarter_"
+            "quarter_",
+            "language_"
 ]
 
 # compute FeatureSelect
@@ -123,7 +128,7 @@ gs = c.featureselect_greedy(
 """
     CURRENT BEST STATS
     -------------
-    "n_neighbors":range(5,6)
+    "n_neighbors":[3]
     ,"algorithm":[
             "auto"
     ]
@@ -134,8 +139,14 @@ gs = c.featureselect_greedy(
             2
     ]
     ,"metric":[
-            "euclidean"
+            "manhattan"
     -------------
-    CURRENT: 0.5793221353439061, MAX: 0.5766128624882128, FEATURE: country_
-    DROPPED: ['genre_', 'budget', 'quarter_', 'adult', 'actor_', 'director_']
+    c.thresholdByColumn(3,"company")
+    c.thresholdByColumn(8,"actor")
+    c.thresholdByColumn(3,"director")
+    -------------
+    CURRENT: 0.5941256014659358, MAX: 0.590191860572896, FEATURE: language_
+    DROPPED: ['genre_', 'quarter_', 'adult', 'actor_']
 """
+
+

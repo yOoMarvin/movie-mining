@@ -21,13 +21,13 @@ c.dropColumns([
         "original_title"
         ,"productivity_binned_multi"
         #,"productivity_binned_binary"
+        ,"quarter"
         
         ,"adult"
         #,"belongs_to_collection"
-        ,"budget"
+        #,"budget"
         #,"runtime"
         #,"year"
-        ,"quarter"
 ])
 
 ### scale something if needed
@@ -37,16 +37,16 @@ c.dropColumns([
 
 ### drop columns by prefix if needed
 c.dropColumnByPrefix("actor")
-c.dropColumnByPrefix("director")
+#c.dropColumnByPrefix("director")
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
-#c.thresholdByColumn(2,"company")
 print(len(c.data.columns))
-#c.thresholdByColumn(3,"actor")
-#c.thresholdByColumn(2,"director")
+c.thresholdByColumn(3,"company")
+c.thresholdByColumn(8,"actor")
+c.thresholdByColumn(3,"director")
 print(len(c.data.columns))
 
 # lets print all non-zero columns of a movie to doublecheck
@@ -67,7 +67,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,15)
+    "n_neighbors":range(3,21)
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -75,7 +75,7 @@ parameters = {
             #,"brute"
     ]
     ,"weights":[
-            #"uniform"
+            "uniform",
             "distance"
     ]
     ,"p":[
@@ -97,18 +97,20 @@ parameters = {
 }
 
 
+"""
 # calculate cross validation: try samplings
 estimator.set_params(
-        n_neighbors=5
+        n_neighbors=3
         ,algorithm="auto"
         ,weights="distance"
         ,p=2
-        ,metric="euclidean"
+        ,metric="manhattan"
 )
 print(c.cross_validate(cv,estimator,sample=""))
-
-
 """
+
+
+
 # compute GridSearch
 gs = c.gridSearch(
         estimator
@@ -122,23 +124,25 @@ gs = c.gridSearch(
 # print best result
 c.gridSearchBestScore(gs)
 
-# Best score is 0.3237997957099081 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 9, 'p': 2, 'weights': 'distance'}.
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"results_kNN.csv")
-"""
 
 
 """
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5793221353439061 with params {'algorithm': 'auto', 'metric': 'euclidean', 'n_neighbors': 5, 'p': 2, 'weights': 'distance'}.
-------------------------------------------------------------------------------
 
 CROSS VALIDATION PARAMETERS AND VALUE
-        n_neighbors=5
+
+c.thresholdByColumn(3,"company")
+c.thresholdByColumn(8,"actor")
+c.thresholdByColumn(3,"director")
+
+estimator.set_params(
+        n_neighbors=3
         ,algorithm="auto"
         ,weights="distance"
         ,p=2
-        ,metric="euclidean"
-{'f1': 0.57931608837764381, 'no': 749, 'yes': 3167}
+        ,metric="manhattan"
+)
+{'f1': 0.59412432869840925, 'no': 1074, 'yes': 2839}
 """
