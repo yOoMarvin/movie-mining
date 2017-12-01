@@ -31,18 +31,27 @@ c.dropColumns([
         #,"productivity_binned_binary"
 ])
 
+print(len(c.data.columns))
+c.thresholdByColumn(3,"company")
+c.thresholdByColumn(8,"actor")
+c.thresholdByColumn(3,"director")
+print(len(c.data.columns))
+
 ### scale something if needed
 #c.scale([
 #        "budget"
 #])
 
 ### drop columns by prefix if needed
-#c.dropColumnByPrefix("actor")
-#c.dropColumnByPrefix("director")
-#c.dropColumnByPrefix("company")
+c.dropColumnByPrefix("belongs")
+c.dropColumnByPrefix("actor")
+c.dropColumnByPrefix("director")
+c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
 #c.dropColumnByPrefix("quarter_")
+
+
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -54,7 +63,7 @@ print(c.data.columns)
 c.balanceInfo()
 
 # get parameters for GridSearch
-scorer = c.f1(average="macro") # use F1 score with micro averaging
+scorer = c.f1(average="macro") # use F1 score with macro averaging
 estimator = c.randomForest()
 cv = c.fold(
         k=10
@@ -66,11 +75,10 @@ param_grid = {"max_depth": [None],
               "min_samples_split": [2],
               "min_samples_leaf": [1],
               "bootstrap": [False],
-              "criterion": ["entropy"]}
-
+              "criterion": ["gini"]}
 features = [
             "adult",
-            "belongs_to_collection",
+            #"belongs_to_collection",
             "budget",
             "runtime",
             "year",
@@ -105,8 +113,8 @@ gs = c.featureselect_greedy(
                   "min_samples_split": [2],
                   "min_samples_leaf": [1],
                   "bootstrap": [False],
-                  "criterion": ["entropy"]}
+                  "criterion": ["gini"]}
     -------------
-    CURRENT: 0.5936501889483914, MAX: 0.5886381702831502, FEATURE: company_
-    DROPPED: ['actor_', 'quarter_']
+    CURRENT: 0.5929870756619212, MAX: 0.5860341040249972, FEATURE: runtime
+    DROPPED: ['country_', 'actor_', 'director_']
 """
