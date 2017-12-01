@@ -97,7 +97,7 @@ estimator.set_params(
     multi_class='ovr',
     class_weight='balanced'
 )
-print(c.cross_validate(cv,estimator,sample=""))
+print(c.cross_validate(cv,estimator,sample="up"))
 
 
 """

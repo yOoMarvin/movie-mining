@@ -98,22 +98,23 @@ estimator.set_params(
     min_samples_split=5,
     class_weight=None
 )
-print(c.cross_validate(cv,estimator,sample=""))
+print(c.cross_validate(cv,estimator,sample="up"))
 
 
 
 
 """
-not reproducable anymore with new filters:
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5837057222077614 with params {'class_weight': None, 'criterion': 'entropy', 'max_depth': 100, 'min_samples_split': 5}.
- ------------------------------------------------------------------------------
- DROPPED: ['quarter_', 'runtime', 'adult']
  
- best value with new filters: 
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.57987745429712 with params {'class_weight': None, 'criterion': 'entropy', 'max_depth': 100, 'min_samples_split': 5}.
- ------------------------------------------------------------------------------
+best value with upsampling: 
+
+  estimator.set_params(
+      criterion= 'entropy',
+      max_depth=100,
+      min_samples_split=5,
+      class_weight=None
+  )
+  {'f1': 0.58903376927932793, 'no': 1021, 'yes': 2895}
+ sampling: upsampling
  Dropped: actor, company, runtime
  thresholds: actor:8 company:3 director:3
  
