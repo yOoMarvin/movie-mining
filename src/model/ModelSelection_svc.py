@@ -24,18 +24,28 @@ c.dropColumns([
         #,"productivity_binned_binary"
 ])
 
-### scale something if needed
-#c.scale([
-#        "budget"
-#])
+## scale something if needed
+c.scale([
+        "budget"
+])
 
 ### drop columns by prefix if needed
 c.dropColumnByPrefix("actor_")
 c.dropColumnByPrefix("director_")
 #c.dropColumnByPrefix("company")
-#c.dropColumnByPrefix("country")
-#c.dropColumnByPrefix("genre")
+c.dropColumnByPrefix("country")
+c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
+
+print(len(c.data.columns))
+thrCompany = 3
+thrActor =8
+thrDirector=3
+print("thresholds: company: {}, actor: {}, director: {}".format(thrCompany, thrActor, thrDirector))
+c.thresholdByColumn(thrCompany,"company")
+c.thresholdByColumn(thrActor,"actor")
+c.thresholdByColumn(thrDirector,"director")
+print(len(c.data.columns))
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -87,18 +97,25 @@ estimator.set_params(
     multi_class='ovr',
     class_weight='balanced'
 )
-print(c.cross_validate(cv,estimator,sample=""))
+print(c.cross_validate(cv,estimator,sample="up"))
 
 
 """
---------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5771136567507072 with params {'class_weight': 'balanced', 'multi_class': 'ovr'}.
- ------------------------------------------------------------------------------
- No extra features dropped
- 
- --------------------------- GRID SEARCH BEST SCORE ---------------------------
- Best score is 0.5786578739249424 with params {'class_weight': 'balanced', 'multi_class': 'ovr'}.
+
+ with new filters:
+  --------------------------- GRID SEARCH BEST SCORE ---------------------------
+ Best score is 0.6004784738065798 with params {'class_weight': 'balanced', 'multi_class': 'ovr'}.
  ------------------------------------------------------------------------------
  DROPPED: ['quarter_', 'adult', 'actor_', 'director_']
+ thresholds: actor:8, company:3, director:3
+ 'no': 1464, 'yes': 2452
+ 
+ 
+ dropping almost everything best score:
+ =====NO IMPROVEMENTS=====
+SCORES: {'belongs_to_collection': 0.59311269404023259, 'budget': 0.60132955023024537, 'runtime': 0.60328404840386463, 'year': 0.59440458095313331, 'director_': 0.60037294719307421, 'company_': 0.56556106734817957}
+CURRENT: 0.6069228601464032, MAX: 0.6032840484038646, FEATURE: runtime
+DROPPED: ['actor_', 'country_', 'quarter_', 'genre_', 'adult']
+=========================
 """
 

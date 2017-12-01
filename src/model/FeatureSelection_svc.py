@@ -39,15 +39,23 @@ c.dropColumns([
 #c.dropColumnByPrefix("genre")
 #c.dropColumnByPrefix("quarter_")
 
+print(len(c.data.columns))
+thrCompany = 3
+thrActor =8
+thrDirector=3
+print("thresholds: company: {}, actor: {}, director: {}".format(thrCompany, thrActor, thrDirector))
+c.thresholdByColumn(thrCompany,"company")
+c.thresholdByColumn(thrActor,"actor")
+c.thresholdByColumn(thrDirector,"director")
+print(len(c.data.columns))
+
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
 df = df.iloc[df.nonzero()[0]]
-print(df)
+#print(df)
 print(c.data.columns)
 
-c.splitData()
-#c.upsampleTrainData()
-#c.downsampleTrainData()
+
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with macro averaging
