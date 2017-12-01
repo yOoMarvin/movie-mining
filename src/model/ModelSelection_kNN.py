@@ -107,6 +107,8 @@ estimator.set_params(
         ,metric="euclidean"
 )
 print(c.cross_validate(cv,estimator,sample=""))
+print(c.cross_validate(cv,estimator,sample="down"))
+print(c.cross_validate(cv,estimator,sample="up"))
 
 
 
@@ -162,5 +164,7 @@ estimator.set_params(
         ,p=2
         ,metric="euclidean"
 )
-{'f1': 0.6140887381748299, 'no': 1067, 'yes': 2846}
+unsampled: {'f1': 0.6140887381748299, 'no': 1067, 'yes': 2846}
+up-sampled: {'f1': 0.47963743779714313, 'no': 2648, 'yes': 1265}
+down-sampled: {'f1': 0.39577490421400813, 'no': 3128, 'yes': 785}
 """
