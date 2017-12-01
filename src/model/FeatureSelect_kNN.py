@@ -66,7 +66,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":[3] #range(5,6)
+    "n_neighbors":[16] #range(5,6)
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -74,8 +74,8 @@ parameters = {
             #,"brute"
     ]
     ,"weights":[
-            #"uniform"
-            "distance"
+            "uniform"
+            #"distance"
     ]
     ,"p":[
             #1
@@ -83,8 +83,8 @@ parameters = {
             #,3
     ]
     ,"metric":[
-            #"euclidean"
-            "manhattan"
+            "euclidean"
+            #"manhattan"
             #,"chebyshev"
             #,"minkowski"
             #,"wminkowski" # throws error: additional metric parameters might be missing
@@ -128,25 +128,25 @@ gs = c.featureselect_greedy(
 """
     CURRENT BEST STATS
     -------------
-    "n_neighbors":[3]
+    "n_neighbors":[16]
     ,"algorithm":[
             "auto"
     ]
     ,"weights":[
-            "distance"
+            "uniform"
     ]
     ,"p":[
             2
     ]
     ,"metric":[
-            "manhattan"
+            "euclidean"
     -------------
     c.thresholdByColumn(3,"company")
     c.thresholdByColumn(8,"actor")
     c.thresholdByColumn(3,"director")
     -------------
-    CURRENT: 0.5941256014659358, MAX: 0.590191860572896, FEATURE: language_
-    DROPPED: ['genre_', 'quarter_', 'adult', 'actor_']
+    CURRENT: 0.6140756581914519, MAX: 0.6116788411380764, FEATURE: director_
+    DROPPED: ['actor_', 'quarter_', 'genre_', 'country_', 'runtime', 'adult']
 """
 
 
