@@ -113,19 +113,22 @@ def avg_roc(cv, estimator, data, target, pos_label):
     return mean_fpr, mean_tpr, mean_auc, std_auc
 
 
+
+
+
 # Function for computing rov curve for all labels using micro measurements
-def micro_roc(estimator, data, target):
-    # Import some data to play with
+def macro_roc(estimator, data, target):
+    # Data
     X = data
     y = target
 
     # Binarize the output
-    y = label_binarize(y, classes=['no', 'yes']) #Adjust the labels to your need
+    y = label_binarize(y, classes=['yes', 'no']) #Adjust the labels to your need
     n_classes = y.shape[1]
 
     # shuffle and split training and test sets --> Need to to this, no cross val here
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5,
-                                                        random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.3,
+                                                        random_state=42)
 
     # Learn to predict each class against the other
     classifier = OneVsRestClassifier(estimator)
@@ -135,13 +138,13 @@ def micro_roc(estimator, data, target):
     fpr = dict()
     tpr = dict()
     roc_auc = dict()
-    for i in range(n_classes):
-        fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
-        roc_auc[i] = auc(fpr[i], tpr[i])
+    #for i in range(n_classes):
+    #    fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+    #    roc_auc[i] = auc(fpr[i], tpr[i])
 
-    # Compute micro-average ROC curve and ROC area
-    fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
-    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+    # Compute macro-average ROC curve and ROC area
+    fpr["macro"], tpr["macro"], _ = roc_curve(y_test, y_score[:,1])
+    roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
     return fpr, tpr, roc_auc
 
@@ -178,8 +181,8 @@ plt.figure(figsize=(5,5))
 plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
 
 # Naive Bayes - Micro Roc
-fpr, tpr, roc_auc = micro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
-plt.plot(fpr[2], tpr[2],lw=2, label='Naive Bayes ROC curve (area = %0.2f)' % roc_auc[2])
+fpr, tpr, roc_auc = macro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Naive Bayes macro-avg ROC curve (area = %0.2f)' % roc_auc['macro'])
 
 plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
