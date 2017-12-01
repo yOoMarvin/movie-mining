@@ -6,10 +6,10 @@ Created on Thu Nov 20
 import ClassifierTemplate as ct
 import pandas as pd
 
-data = pd.read_csv("../../data/interim/only_useful_datasets.csv", index_col=0)
+df = pd.read_csv("../../data/processed/train_set.csv", index_col=0)
 
 # DataFrame containing label (!)
-df = pd.DataFrame(data)
+#df = pd.DataFrame(data)
 
 # Build Classifier object with DataFrame and column name of truth values
 c = ct.Classifier(df,"productivity_binned_binary")
@@ -27,39 +27,21 @@ c.dropColumns([
         #,"productivity_binned_binary"
 ])
 
-### scale something if needed
-#c.scale([
-#        "budget"
-#])
 
 ### drop columns by prefix if needed
-"""
 c.dropColumnByPrefix("actor")
 c.dropColumnByPrefix("director")
-c.dropColumnByPrefix("company")
+#c.dropColumnByPrefix("company")
 c.dropColumnByPrefix("country")
 c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
-"""
-c.dropColumnByPrefix("country")
-c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("actor")
-c.dropColumnByPrefix("director")
+#c.dropColumnByPrefix("quarter_")
 
-# lets print all non-zero columns of a movie to doublecheck
-#df = c.data.loc[19898]
-#df = df.iloc[df.nonzero()[0]]
-#print(df)
-#print(c.data.columns)
+#Threshold
+#c.thresholdByColumn(1,"company")
 
 """
 
-# get information about the data
-c.balanceInfo()
-
-
-
-# get parameters for GridSearch
+# get parameters
 scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.bayes() # get GaussianNB estimator
 
@@ -69,36 +51,11 @@ cross_val = c.fold(
 ) # KStratifiedFold with random_state = 42
 
 
-parameters = {
-    # No parameters for bayes
+print("unsampled:" + str(c.cross_validate(cross_val,estimator,sample="")))
+print("upsampled:" + str(c.cross_validate(cross_val,estimator,sample="up")))
+print("downsampled:" + str(c.cross_validate(cross_val,estimator,sample="down")))
 
-    # parameter can be used to tweak parallel computation / n = # of jobs
-    #,"n_jobs":[1]
-}
+
+
+BEST: downsampled: 0.54
 """
-"""
-# compute GridSearch
-gs = c.gridSearch(
-        estimator
-        ,scorer
-        ,parameters
-        ,print_results=False # let verbose print the results
-        ,verbose=2
-        ,cv=cross_val
-)
-
-# print best result
-c.gridSearchBestScore(gs)
-
-# save all results in csv
-c.gridSearchResults2CSV(gs,parameters,"naivebayes_results.csv")
-
-# variables for export
-estimator = gs.best_estimator_
-data = c.data
-target = c.truth_arr
-"""
-
-estimator.set_params(
-)
-print(c.cross_validate(cross_val,estimator,sample=""))
