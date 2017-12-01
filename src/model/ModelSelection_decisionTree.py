@@ -26,9 +26,9 @@ c.dropColumns([
 ])
 
 ### scale something if needed
-#c.scale([
-#        "budget"
-#])
+c.scale([
+        "budget"
+])
 
 ### drop columns by prefix if needed
 #c.dropColumnByPrefix("actor")
@@ -38,16 +38,21 @@ c.dropColumns([
 #c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
+print(len(c.data.columns))
+thrCompany = 3
+thrActor =8
+thrDirector=3
+print("thresholds: company: {}, actor: {}, director: {}".format(thrCompany, thrActor, thrDirector))
+c.thresholdByColumn(thrCompany,"company")
+c.thresholdByColumn(thrActor,"actor")
+c.thresholdByColumn(thrDirector,"director")
+print(len(c.data.columns))
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
-#df = df.iloc[df.nonzero()[0]]
+df = df.iloc[df.nonzero()[0]]
 print(df)
 print(c.data.columns)
-
-c.splitData()
-#c.upsampleTrainData()
-#c.downsampleTrainData()
 
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with macro averaging
@@ -66,7 +71,7 @@ parameters = {
     #,"n_jobs":[1]
 }
 
-
+"""
 # compute GridSearch
 gs = c.gridSearch(
         estimator
@@ -84,16 +89,32 @@ c.gridSearchBestScore(gs)
 
 # save all results in csv
 c.gridSearchResults2CSV(gs,parameters,"tree_results.csv")
+"""
 
-c.fit_predict(gs.best_estimator_)
-print(c.confusion_matrix())
+# calculate cross validation: try samplings
+estimator.set_params(
+    criterion= 'entropy',
+    max_depth=100,
+    min_samples_split=5,
+    class_weight=None
+)
+print(c.cross_validate(cv,estimator,sample=""))
 
-c.classification_report()
+
 
 
 """
+not reproducable anymore with new filters:
 --------------------------- GRID SEARCH BEST SCORE ---------------------------
  Best score is 0.5837057222077614 with params {'class_weight': None, 'criterion': 'entropy', 'max_depth': 100, 'min_samples_split': 5}.
  ------------------------------------------------------------------------------
  DROPPED: ['quarter_', 'runtime', 'adult']
+ 
+ best value with new filters: 
+--------------------------- GRID SEARCH BEST SCORE ---------------------------
+ Best score is 0.57987745429712 with params {'class_weight': None, 'criterion': 'entropy', 'max_depth': 100, 'min_samples_split': 5}.
+ ------------------------------------------------------------------------------
+ Dropped: actor, company, runtime
+ thresholds: actor:8 company:3 director:3
+ 
 """
