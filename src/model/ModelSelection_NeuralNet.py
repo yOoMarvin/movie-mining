@@ -19,20 +19,16 @@ c = ct.Classifier(df,"productivity_binned_binary")
 ### drop single columns not needed for Classification
 c.dropColumns([
         "original_title"
+        ,"productivity_binned_multi"
+        #,"productivity_binned_binary"
+        
         #,"adult"
         #,"belongs_to_collection"
         #,"budget"
         #,"runtime"
-        ,"year"
+        #,"year"
         #,"quarter"
-        ,"productivity_binned_multi"
-        #,"productivity_binned_binary"
 ])
-
-### scale something if needed
-#c.scale([
-#        "budget"
-#])
 
 ### drop columns by prefix if needed
 #c.dropColumnByPrefix("actor")
@@ -40,7 +36,11 @@ c.dropColumns([
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
+#c.dropColumnByPrefix("quarter_")
+
+c.thresholdByColumn(3,"company")
+c.thresholdByColumn(8,"actor")
+c.thresholdByColumn(3,"director")
 
 # lets print all non-zero columns of a movie to doublecheck
 df = c.data.loc[19898]
@@ -88,7 +88,7 @@ parameters = {
     #,"n_jobs":[1]
 }
 
-print(c.cross_validate(cv,estimator,sample="up"))
+print(c.cross_validate(cv,estimator,sample=""))
 
 """
 # compute GridSearch

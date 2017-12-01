@@ -52,7 +52,7 @@ c.dropColumnByPrefix("director")
 #print(df)
 #print(c.data.columns)
 
-
+"""
 
 # get information about the data
 c.balanceInfo()
@@ -75,7 +75,7 @@ parameters = {
     # parameter can be used to tweak parallel computation / n = # of jobs
     #,"n_jobs":[1]
 }
-
+"""
 """
 # compute GridSearch
 gs = c.gridSearch(
