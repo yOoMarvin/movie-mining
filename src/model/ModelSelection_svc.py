@@ -31,7 +31,7 @@ c.scale([
 
 ### drop columns by prefix if needed
 c.dropColumnByPrefix("actor_")
-c.dropColumnByPrefix("director_")
+#c.dropColumnByPrefix("director_")
 #c.dropColumnByPrefix("company")
 c.dropColumnByPrefix("country")
 c.dropColumnByPrefix("genre")
