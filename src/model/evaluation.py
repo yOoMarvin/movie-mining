@@ -442,24 +442,27 @@ plt.show()
 plt.figure(figsize=(7,7))
 plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Luck', alpha=.8) # draw diagonal
 
-# Naive Bayes - Macro Roc
-fpr, tpr, roc_auc = macro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
-plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Naive Bayes(ROC Area = %0.2f)' % roc_auc['macro'])
 # KNN - Macro Roc
 fpr, tpr, roc_auc = macro_roc(knn_estimator, knn_data, knn_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='16-NN(ROC Area = %0.2f)' % roc_auc['macro'])
+# Support Vector Machine - Macro Roc
+fpr, tpr, roc_auc = macro_roc(sv_estimator, sv_data, sv_target)
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='SVM(ROC Area = %0.2f)' % roc_auc['macro'])
+# Random Forest - Macro Roc
+fpr, tpr, roc_auc = macro_roc(rf_estimator, rf_data, rf_target)
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Random Forest(ROC Area = %0.2f)' % roc_auc['macro'])
+# Naive Bayes - Macro Roc
+fpr, tpr, roc_auc = macro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Naive Bayes(ROC Area = %0.2f)' % roc_auc['macro'])
+
 # Decision Tree - Macro Roc
 fpr, tpr, roc_auc = macro_roc(tree_estimator, tree_data, tree_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Decision Tree(ROC Area = %0.2f)' % roc_auc['macro'])
 # Neural Net - Macro Roc
 #fpr, tpr, roc_auc = macro_roc(net_estimator, net_data, net_target)
 #plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Neural Net(ROC Area = %0.2f)' % roc_auc['macro'])
-# Random Forest - Macro Roc
-fpr, tpr, roc_auc = macro_roc(rf_estimator, rf_data, rf_target)
-plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Random Forest(ROC Area = %0.2f)' % roc_auc['macro'])
-# Support Vector Machine - Macro Roc
-fpr, tpr, roc_auc = macro_roc(sv_estimator, sv_data, sv_target)
-plt.plot(fpr['macro'], tpr['macro'],lw=2, label='SVM(ROC Area = %0.2f)' % roc_auc['macro'])
+
+
 
 plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
