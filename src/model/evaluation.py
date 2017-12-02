@@ -466,6 +466,6 @@ plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Naive Bayes(ROC Area = %0.2f)' 
 
 plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
-plt.legend()
+plt.legend(loc=4, prop={'size': 12})
 
 plt.show()
