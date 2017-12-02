@@ -152,10 +152,14 @@ tr.dropColumns([
         #,"productivity_binned_binary"
 ])
 
+### scale something if needed
+tr.scale([
+        "budget"
+])
 
-
-### drop columns by prefix if needed
-tr.dropColumnByPrefix("quarter_")
+tr.thresholdByColumn(3,"company")
+tr.thresholdByColumn(8,"actor")
+tr.thresholdByColumn(3,"director")
 
 tree_data = tr.data
 tree_target = tr.truth_arr
@@ -270,7 +274,6 @@ print('#########   SUPPORT VECTOR MACHINES EVALUATION   #########')
 # Build Classifier object with DataFrame and column name of truth values
 sv = ct.Classifier(df,"productivity_binned_binary")
 
-# drop columns not needed for Classification
 sv.dropColumns([
          "original_title"
         ,"adult"
@@ -283,11 +286,20 @@ sv.dropColumns([
         #,"productivity_binned_binary"
 ])
 
+## scale something if needed
+sv.scale([
+        "budget"
+])
+
 ### drop columns by prefix if needed
 sv.dropColumnByPrefix("actor_")
-sv.dropColumnByPrefix("director_")
+sv.dropColumnByPrefix("country")
+sv.dropColumnByPrefix("genre")
 sv.dropColumnByPrefix("quarter_")
 
+sv.thresholdByColumn(3,"company")
+sv.thresholdByColumn(8,"actor")
+sv.thresholdByColumn(3,"director")
 
 sv_data = sv.data
 sv_target = sv.truth_arr
