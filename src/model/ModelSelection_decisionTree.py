@@ -36,7 +36,7 @@ c.scale([
 #c.dropColumnByPrefix("company")
 #c.dropColumnByPrefix("country")
 #c.dropColumnByPrefix("genre")
-c.dropColumnByPrefix("quarter_")
+#c.dropColumnByPrefix("quarter_")
 
 print(len(c.data.columns))
 thrCompany = 3
@@ -105,6 +105,7 @@ print(c.cross_validate(cv,estimator,sample="up"))
 
 """
  
+
 best value with upsampling: 
 
   estimator.set_params(
@@ -115,7 +116,7 @@ best value with upsampling:
   )
   {'f1': 0.58903376927932793, 'no': 1021, 'yes': 2895}
  sampling: upsampling
- Dropped: actor, company, runtime
+ Dropped: runtime, adult
  thresholds: actor:8 company:3 director:3
  
 """
