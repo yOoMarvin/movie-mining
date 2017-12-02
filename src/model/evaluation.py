@@ -226,6 +226,13 @@ print('#########   RANDOM FOREST EVALUATION   #########')
 rf = ct.Classifier(df,"productivity_binned_binary")
 
 ### drop single columns not needed for Classification
+rf.dropColumns([
+        "original_title"
+        ,"quarter"
+        ,"productivity_binned_multi"
+        , "adult"
+])
+
 rf.dropColumnByPrefix("belongs")
 rf.dropColumnByPrefix("actor")
 rf.dropColumnByPrefix("director")
