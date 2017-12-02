@@ -451,13 +451,13 @@ plt.plot(fpr['macro'], tpr['macro'],lw=2, label='SVM(ROC Area = %0.2f)' % roc_au
 # Random Forest - Macro Roc
 fpr, tpr, roc_auc = macro_roc(rf_estimator, rf_data, rf_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Random Forest(ROC Area = %0.2f)' % roc_auc['macro'])
+# Decision Tree - Macro Roc
+fpr, tpr, roc_auc = macro_roc(tree_estimator, tree_data, tree_target)
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Decision Tree(ROC Area = %0.2f)' % roc_auc['macro'])
 # Naive Bayes - Macro Roc
 fpr, tpr, roc_auc = macro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Naive Bayes(ROC Area = %0.2f)' % roc_auc['macro'])
 
-# Decision Tree - Macro Roc
-fpr, tpr, roc_auc = macro_roc(tree_estimator, tree_data, tree_target)
-plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Decision Tree(ROC Area = %0.2f)' % roc_auc['macro'])
 # Neural Net - Macro Roc
 #fpr, tpr, roc_auc = macro_roc(net_estimator, net_data, net_target)
 #plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Neural Net(ROC Area = %0.2f)' % roc_auc['macro'])
