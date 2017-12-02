@@ -226,24 +226,24 @@ print('#########   RANDOM FOREST EVALUATION   #########')
 rf = ct.Classifier(df,"productivity_binned_binary")
 
 ### drop single columns not needed for Classification
-rf.dropColumns([
-        "original_title"
-        ,"quarter"
-        ,"productivity_binned_multi"
-])
-
+rf.dropColumnByPrefix("belongs")
 rf.dropColumnByPrefix("actor")
-rf.dropColumnByPrefix("quarter")
+rf.dropColumnByPrefix("director")
+rf.dropColumnByPrefix("production_country")
+
+rf.thresholdByColumn(3,"company")
+rf.thresholdByColumn(8,"actor")
+rf.thresholdByColumn(3,"director")
 
 
 rf_data = rf.data
 rf_target = rf.truth_arr
 rf_estimator = RandomForestClassifier(max_depth=None,
-                            max_features=10,
-                            min_samples_split=2,
-                            min_samples_leaf=1,
-                            bootstrap=False,
-                            criterion="entropy")
+                                        max_features=5,
+                                        min_samples_split=2,
+                                        min_samples_leaf=1,
+                                        bootstrap=True,
+                                        criterion="entropy")
 
 rf_estimator.fit(rf_data, rf_target)
 
