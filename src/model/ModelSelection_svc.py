@@ -95,7 +95,8 @@ c.gridSearchResults2CSV(gs,parameters,"svc_results.csv")
 # calculate cross validation: try samplings
 estimator.set_params(
     multi_class='ovr',
-    class_weight='balanced'
+    class_weight='balanced',
+    random_state=42
 )
 print(c.cross_validate(cv,estimator,sample="up"))
 

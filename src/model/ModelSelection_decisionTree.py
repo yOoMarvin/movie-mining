@@ -96,7 +96,8 @@ estimator.set_params(
     criterion= 'entropy',
     max_depth=100,
     min_samples_split=5,
-    class_weight=None
+    class_weight=None,
+    random_state=42
 )
 print(c.cross_validate(cv,estimator,sample="up"))
 
