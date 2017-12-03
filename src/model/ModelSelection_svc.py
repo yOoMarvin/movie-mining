@@ -53,10 +53,6 @@ df = df.iloc[df.nonzero()[0]]
 print(df)
 print(c.data.columns)
 
-c.splitData()
-#c.upsampleTrainData()
-#c.downsampleTrainData()
-
 # get parameters for GridSearch
 scorer = c.f1(average="macro") # use F1 score with micro averaging
 estimator = c.svc() # get svc estimator
@@ -98,7 +94,9 @@ estimator.set_params(
     class_weight='balanced',
     random_state=42
 )
-print(c.cross_validate(cv,estimator,sample="up"))
+
+print(c.cross_validate(cv,estimator,sample=""))
+c.plot_coefficients(estimator=estimator,top_features=20)
 
 
 """
