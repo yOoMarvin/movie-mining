@@ -333,7 +333,12 @@ class Classifier:
         return StratifiedKFold(n_splits=k, shuffle=shuffle, random_state=random_state)
     
     def cross_validate(self,cv,estimator,sample=""):
-        scores = []
+        scores = {
+                "recall":[],
+                "precision":[],
+                "support":[],
+                "f1":[]
+        }
         counts = {}
         for train_indices, test_indices in cv.split(self.data, self.truth_arr):
             train_data, train_target = self.data.iloc[train_indices], self.truth_arr[train_indices]
@@ -352,7 +357,12 @@ class Classifier:
             test_data, test_target = self.data.iloc[test_indices], self.truth_arr[test_indices]
             prediction = estimator.predict(test_data)
             
-            scores.append(f1_score(test_target, prediction, average='macro'))
+            #scores["f1"].append(f1_score(test_target, prediction, average='macro'))
+            precision, recall, f1, support = precision_recall_fscore_support(test_target, prediction, average='macro')
+            scores["precision"].append(precision)
+            scores["recall"].append(recall)
+            scores["f1"].append(f1)
+            #scores["support"].append(support)
             
             #tn, fp, fn, tp = confusion_matrix(test_target, prediction, labels=["yes","no"]).ravel()
             #print(tn,fp,fn,tp)
@@ -363,7 +373,11 @@ class Classifier:
                     counts[l] = 0
                 counts[l] += count[i]
  
-        r = {"f1":sum(scores)/len(scores)}
+        r = {
+                "f1":sum(scores["f1"])/len(scores["f1"]),
+                "precision":sum(scores["precision"])/len(scores["precision"]),
+                "recall":sum(scores["recall"])/len(scores["recall"])
+        }
         r.update(counts)
         return r
     

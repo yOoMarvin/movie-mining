@@ -38,8 +38,11 @@ c.dropColumnByPrefix("genre")
 
 #Threshold
 #c.thresholdByColumn(1,"company")
-
-"""
+print(len(c.data.columns))
+c.thresholdByColumn(3,"company")
+c.thresholdByColumn(8,"actor")
+c.thresholdByColumn(3,"director")
+print(len(c.data.columns))
 
 # get parameters
 scorer = c.f1(average="macro") # use F1 score with micro averaging
@@ -56,6 +59,6 @@ print("upsampled:" + str(c.cross_validate(cross_val,estimator,sample="up")))
 print("downsampled:" + str(c.cross_validate(cross_val,estimator,sample="down")))
 
 
-
+"""
 BEST: downsampled: 0.54
 """

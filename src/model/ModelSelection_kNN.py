@@ -43,6 +43,11 @@ c.dropColumnByPrefix("country")
 c.dropColumnByPrefix("genre")
 c.dropColumnByPrefix("quarter_")
 
+df = c.data.loc[19898]
+df = df.iloc[df.nonzero()[0]]
+print(df)
+print(c.data.columns)
+
 print(len(c.data.columns))
 c.thresholdByColumn(3,"company")
 c.thresholdByColumn(8,"actor")
@@ -67,7 +72,7 @@ cv = c.fold(
 ) # KStratifiedFold with random_state = 42
 # parameters to iterate in GridSearch
 parameters = {
-    "n_neighbors":range(3,21)
+    "n_neighbors":[16]
     ,"algorithm":[
             "auto"
             #,"ball_tree"
@@ -75,8 +80,8 @@ parameters = {
             #,"brute"
     ]
     ,"weights":[
-            "uniform",
-            "distance"
+            "uniform"
+            #"distance"
     ]
     ,"p":[
             #1
@@ -85,8 +90,8 @@ parameters = {
     ]
     ,"metric":[
             "euclidean"
-            ,"manhattan"
-            ,"chebyshev"
+            #,"manhattan"
+            #,"chebyshev"
             #,"minkowski"
             #,"wminkowski" # throws error: additional metric parameters might be missing
             #,"seuclidean" # throws error: additional metric parameters might be missing
@@ -107,9 +112,8 @@ estimator.set_params(
         ,metric="euclidean"
 )
 print(c.cross_validate(cv,estimator,sample=""))
-print(c.cross_validate(cv,estimator,sample="down"))
-print(c.cross_validate(cv,estimator,sample="up"))
-
+#print(c.cross_validate(cv,estimator,sample="down"))
+#print(c.cross_validate(cv,estimator,sample="up"))
 
 
 """
