@@ -166,7 +166,8 @@ tree_target = tr.truth_arr
 tree_estimator = tree.DecisionTreeClassifier(class_weight=None,
                                         criterion='entropy',
                                         max_depth=100,
-                                        min_samples_split=5)
+                                        min_samples_split=5,
+                                        random_state=42)
 
 tree_estimator.fit(tree_data, tree_target)
 
@@ -254,7 +255,8 @@ rf_estimator = RandomForestClassifier(max_depth=None,
                                         min_samples_split=2,
                                         min_samples_leaf=1,
                                         bootstrap=True,
-                                        criterion="entropy")
+                                        criterion="entropy",
+                                        random_state=42)
 
 rf_estimator.fit(rf_data, rf_target)
 
@@ -304,7 +306,8 @@ sv.thresholdByColumn(3,"director")
 sv_data = sv.data
 sv_target = sv.truth_arr
 sv_estimator = LinearSVC(multi_class='ovr',
-                        class_weight='balanced')
+                        class_weight='balanced',
+                        random_state=42)
 
 sv_estimator.fit(sv_data, sv_target)
 
@@ -451,12 +454,13 @@ plt.plot(fpr['macro'], tpr['macro'],lw=2, label='SVC(ROC Area = %0.2f)' % roc_au
 # Random Forest - Macro Roc
 fpr, tpr, roc_auc = macro_roc(rf_estimator, rf_data, rf_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Random Forest(ROC Area = %0.2f)' % roc_auc['macro'])
-# Decision Tree - Macro Roc
-fpr, tpr, roc_auc = macro_roc(tree_estimator, tree_data, tree_target)
-plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Decision Tree(ROC Area = %0.2f)' % roc_auc['macro'])
 # Naive Bayes - Macro Roc
 fpr, tpr, roc_auc = macro_roc(naivebayes_estimator, naivebayes_data, naivebayes_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Naive Bayes(ROC Area = %0.2f)' % roc_auc['macro'])
+# Decision Tree - Macro Roc
+fpr, tpr, roc_auc = macro_roc(tree_estimator, tree_data, tree_target)
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Decision Tree(ROC Area = %0.2f)' % roc_auc['macro'])
+
 
 # Neural Net - Macro Roc
 #fpr, tpr, roc_auc = macro_roc(net_estimator, net_data, net_target)
