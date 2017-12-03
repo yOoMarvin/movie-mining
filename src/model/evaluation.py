@@ -447,7 +447,7 @@ fpr, tpr, roc_auc = macro_roc(knn_estimator, knn_data, knn_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='16-NN(ROC Area = %0.2f)' % roc_auc['macro'])
 # Support Vector Machine - Macro Roc
 fpr, tpr, roc_auc = macro_roc(sv_estimator, sv_data, sv_target)
-plt.plot(fpr['macro'], tpr['macro'],lw=2, label='SVM(ROC Area = %0.2f)' % roc_auc['macro'])
+plt.plot(fpr['macro'], tpr['macro'],lw=2, label='SVC(ROC Area = %0.2f)' % roc_auc['macro'])
 # Random Forest - Macro Roc
 fpr, tpr, roc_auc = macro_roc(rf_estimator, rf_data, rf_target)
 plt.plot(fpr['macro'], tpr['macro'],lw=2, label='Random Forest(ROC Area = %0.2f)' % roc_auc['macro'])
